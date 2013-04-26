@@ -48,6 +48,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		public int num_verts;		// number of vertices
 		public int num_faces;		// number of triangle faces
 
+		
 		public void Draw() {
 			vertexBuffer.rewind();
 			normalBuffer.rewind();
@@ -56,6 +57,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 			gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 			
 			float[] zPlane = {0.0f, 0.0f, 1.0f, 0.0f};
+			float[] xPlane = {1.0f, 0.0f, 0.0f, 0.0f};
 			
 			cat_tex.enable(gl);
 			cat_tex.bind(gl);
@@ -64,9 +66,9 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 			gl.glEnable(GL2.GL_TEXTURE_GEN_T);
 			gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
 			gl.glTexGeni(GL2.GL_T, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
-			gl.glTexGenfv(GL2.GL_S, GL2.GL_EYE_PLANE, zPlane, 0);
-			gl.glTexGenfv(GL2.GL_T, GL2.GL_EYE_PLANE, zPlane, 0);
-		    
+			gl.glTexGenfv(GL2.GL_S, GL2.GL_OBJECT_PLANE, xPlane, 0);
+			gl.glTexGenfv(GL2.GL_T, GL2.GL_OBJECT_PLANE, zPlane, 0);
+			
 			
 			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertexBuffer);
 			gl.glNormalPointer(GL.GL_FLOAT, 0, normalBuffer);
@@ -278,12 +280,14 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	private float motionSpeed, rotateSpeed;
 	private float animation_speed = 0.5f;
 	
+	// ----------------------
 	Texture cat_tex;
+	
 	
 	/* === YOUR WORK HERE === */
 	/* Define more models you need for constructing your scene */
 	//private objModel head = new objModel("head.obj");
-	//private objModel box1 = new objModel("box.obj");
+	private objModel box1 = new objModel("box.obj");
 	private objModel bunny = new objModel("./a3_objmodels/bunny2.obj");
 	
 	double counter = 0.0; //For the head
@@ -292,6 +296,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	
 	private objModel wing1 = new objModel("paddle.obj");
 	private objModel decoration = new objModel("./a3_objmodels/wind_chimes.obj");
+	private objModel plane = new objModel("plane.obj");
 	
 	//For shadow mapping, not working yet
 	//private objModel floor = new objModel("./a3_objmodels/plane.obj");
@@ -350,26 +355,6 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		float body_shine[] = {50};   gl.glMaterialfv( GL.GL_FRONT, GL2.GL_SHININESS, body_shine, 0);
 		float body_specular[] = { .4f, 0.6f, .6f, 1 }; gl.glMaterialfv( GL.GL_FRONT, GL2.GL_SPECULAR, body_specular, 0);
 		
-		//TEXTURE
-		
-		
-		//Load image into buffered image
-		//Convert to byte buffer
-	
-	    /*ByteBuffer buffer = new ByteBuffer(img.getWidth() * img.getHeight() * 4);
-	    Color3f c;
-		
-		for (int y = 0; y < img.getHeight(); y++) {
-	        for (int x = 0; x < img.getWidth(); x++) {
-	            c = new Color(image.getRGB(x, y));
-	            buffer.put((byte) c.getRed());     // Red component
-	            buffer.put((byte) c.getGreen());      // Green component
-	            buffer.put((byte) c.getBlue());               // Blue component
-	            buffer.put((byte) c.getAlpha());    // Alpha component. Only for RGBA
-	        }
-	    }
-		*/
-		//gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGB, 2, 2, 0, GL.GL_RGB, GL.GL_FLOAT, pixels);
 		
 		gl.glPushMatrix();	//Default
 		//Rotate head
@@ -524,13 +509,19 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		
 		*/
 		
+		box1.Draw();
+		
+		gl.glTranslatef(1f, 0f, 1f);
 		bunny.Draw();
 		
-		gl.glTranslatef(0.0f, -10f, 0.0f);
+		gl.glTranslatef(0.0f, -.5f, 0f);
+		gl.glScalef(10f, 0f, 10f);
+		plane.Draw();
+
 		//floor.Draw();
 		/* increment example_rotateT */
 		if (animator.isAnimating()){
-			box_translate = (float)1.5 * head_translate;
+		/*	box_translate = (float)1.5 * head_translate;
 			head_translate = (float)Math.sin(counter);
 
 			//Rotate from -90 to 90, then change direction
@@ -552,7 +543,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 			
 			//It was too fast so I had to slow it down
 			counter+= animation_speed/6;
-			
+		*/	
 		}	
 	}	
 	
@@ -571,6 +562,8 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		setVisible(true);
 		animator.start();
 		canvas.requestFocus();
+		
+		
 	}
 	
 	public static void main(String[] args) {
@@ -581,8 +574,11 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	public void init(GLAutoDrawable drawable) {
 		gl = drawable.getGL().getGL2();
 
+		System.out.println(gl.isExtensionAvailable("GL_ARB_depth_texture"));
+		System.out.println(gl.isExtensionAvailable("GL_ARB_shadow"));
+		
 		initViewParameters();
-		gl.glClearColor(.1f, .1f, .1f, 1f);
+		gl.glClearColor(0f, 0f, 0f, 0f);
 		gl.glClearDepth(1.0f);
 
 	    // white light at the eye
@@ -640,7 +636,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    gl.glEnable( GL2.GL_LIGHT2 );
 
 	    gl.glEnable(GL.GL_DEPTH_TEST);
-		gl.glDepthFunc(GL.GL_LESS);
+		gl.glDepthFunc(GL.GL_LEQUAL);
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		gl.glCullFace(GL.GL_BACK);
 		gl.glEnable(GL.GL_CULL_FACE);
@@ -663,6 +659,18 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 			gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
 		}
 		
+		/*
+		Texture shadow_map = TextureIO.newTexture(0);
+		shadow_map.bind(gl);
+		//Create the shadow map texture
+		gl.glTexImage2D( GL2.GL_TEXTURE_2D, 0, GL2.GL_DEPTH_COMPONENT, winW, winH, 0, GL2.GL_DEPTH_COMPONENT, GL2.GL_UNSIGNED_BYTE, null);
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+	    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+	    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP);
+	    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP);
+		
+		
+	    */
 	}
 	
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
