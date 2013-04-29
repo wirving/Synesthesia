@@ -16,8 +16,11 @@ public class LevelOne {
 				if(i == -1 || i == 25 || j == -1 || j == 25){
 					y = 0;
 				}
-				BasicObject newObj = new BasicObject(i,y,j);
-				BasicObject ceiling = new BasicObject(i,1,j);
+				BasicObject newObj = new BasicObject(i,y,j,1,1,1);
+				BasicObject ceiling = new BasicObject(i,1,j,1,1,1);
+				
+				newObj.setObject("cube");
+				ceiling.setObject("cube");
 				
 				if(i != -1 && i != 25 && j != -1 && j != 25){
 					newObj.setDynamic(true);

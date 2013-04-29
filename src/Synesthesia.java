@@ -5,11 +5,20 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-import javax.media.opengl.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCanvas;
+import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
 import javax.vecmath.Point3f;
@@ -17,20 +26,6 @@ import javax.vecmath.Vector3f;
 
 import com.sun.opengl.util.BufferUtil;
 import com.sun.opengl.util.FPSAnimator;
-import com.sun.opengl.util.GLUT;
-
-import java.awt.Robot;
-import java.awt.AWTException; 
-import java.awt.Toolkit;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
@@ -280,7 +275,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			
 		case 'a':
 		case 'A':
-			roth -= 2f;
+			roth -= 2f; //Smaller value will be smoother but slower
 			if(roth < 360)
 				roth += 360;
 			break;
@@ -339,16 +334,21 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	/* === YOUR WORK HERE === */
 	/* Define more models you need for constructing your scene */
 
-	private objModel cube = new objModel("floorobj.obj");
+	//private objModel cube = new objModel("floorobj.obj");
 
 	
 	private LevelOne levelOne = new LevelOne();
 	//private LevelTwo levelTwo = new LevelTwo();
+	private Temple temple = new Temple();
+	
+	//For temple set light0 position to {0, 5, 1, 0}
+	//I'll fix this later
 	private ArrayList<BasicObject> objects = levelOne.getStaticEntities();
 	//private ArrayList<BasicObject> objects = levelTwo.getStaticEntities();
 	
 	private boolean canMove = true;
-	//HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
+	HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
+	
 	
 	private float example_rotateT = 0.f;
 	/* Here you should give a conservative estimate of the scene's bounding box
@@ -362,6 +362,18 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	private float float_translate = 0.f;
 	private int float_counter = 0;
 	private boolean up = true;
+	
+	//Do this every time we load a new level?
+	public void makeObjectMap(){
+		
+		objectMap.put("cube", new objModel("floorobj.obj"));
+		objectMap.put("plane", new objModel("plane.obj"));
+		objectMap.put("cylinder", new objModel("trunk.obj"));
+		objectMap.put("statue", new objModel("female.obj"));
+		objectMap.put("plant", new objModel("plant.obj"));
+		
+	}
+	
 	public void display(GLAutoDrawable drawable) {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
@@ -405,15 +417,23 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			
 			gl.glPushMatrix();
 			currentObject.Move(xpos,ypos,zpos);
+			
+		    gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
+		    gl.glRotatef(currentObject.getYRot(), 0f, 1f, 0f);
+		    gl.glRotatef(currentObject.getZRot(), 0f, 0f, 1f);
+		    
 			gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
-		    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, currentObject.getDiffuseFlicker(), 0);
-
-			cube.Draw();
+		    gl.glMaterialfv( GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE, currentObject.getDiffuseColor(), 0);
+		    gl.glMaterialfv( GL.GL_FRONT_AND_BACK, GL.GL_SPECULAR, currentObject.getSpecularColor(), 0);
+		    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
+		    
+		    objectMap.get(currentObject.getObject()).Draw();
+			//cube.Draw();
 			gl.glPopMatrix();
 		}
 		
 		gl.glPopMatrix(); //End Drawing
-		
+	
 		/* increment example_rotateT */
 		if (animator.isAnimating())
 			example_rotateT += 1.0f * animation_speed;
@@ -460,10 +480,14 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		gl = drawable.getGL();
 
 		initViewParameters();
+		
+		makeObjectMap();
+		
 		gl.glClearColor(.1f, .1f, .1f, 1f);
 		gl.glClearDepth(1.0f);
 
-	    // white light at the eye
+		
+		//Eventually set lights based on scene description
 	    float light0_position[] = { 0, 0, 1, 0 };
 	    float light0_diffuse[] = { 1, 1, 1, 1 };
 	    float light0_specular[] = { 1, 1, 1, 1 };
@@ -616,8 +640,8 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			keyPressed(e);
 		}
 	}
-	public void mouseMoved(MouseEvent e) { }
-	/*public void mouseMoved(MouseEvent e) { 
+	//public void mouseMoved(MouseEvent e) { }
+	public void mouseMoved(MouseEvent e) { 
 		int x = e.getX();
 		int y = e.getY();
 		//if(mouseLock == false){
@@ -629,8 +653,8 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 
 		
 		canvas.display();
-		//}
-	}*/
+		}
+	///
 	
 	public void actionPerformed(ActionEvent e) { }
 	public void mouseClicked(MouseEvent e) { }
