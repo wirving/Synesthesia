@@ -86,7 +86,7 @@ public class Temple {
 		staticEntities.add(wall_L);
 		staticEntities.add(wall_R);
 		
-		BasicObject wall_back = new BasicObject(0f, -90f, 5f, 25f, 2.5f, 25f, 0f, 0f, 90f);
+		BasicObject wall_back = new BasicObject(5f, -90f, 5f, 25f, 2.5f, 25f, 0f, 0f, 90f);
 		BasicObject wall_behind = new BasicObject(-5f, -10f, 5f, 25f, 2.5f, 25f, 0f, 0f, -90f);
 
 		wall_back.setDiffuse(wall_color);
