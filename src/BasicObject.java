@@ -30,11 +30,16 @@ public class BasicObject {
     // Name of Object used to Draw
     private String object = "cube";
     
+    //All of the texture things
+    private TextureParameters texParams;
+    
     // Constructor for position only
     public BasicObject(float xPos,float yPos,float zPos){
     	this.xPos = xPos;
     	this.yPos = yPos;
     	this.zPos = zPos;
+    	
+    	texParams = new TextureParameters();
     }
 
     // Constructor for position and scale
@@ -46,6 +51,8 @@ public class BasicObject {
     	this.xScale = xScale;
     	this.yScale = yScale;
     	this.zScale = zScale;
+    	
+    	texParams = new TextureParameters();
     }
     
     // Constructor for position, scale and rotation
@@ -61,6 +68,8 @@ public class BasicObject {
     	this.xRot = xRot;
     	this.yRot = yRot;
     	this.zRot = zRot;
+    	
+    	texParams = new TextureParameters();
     }
     
     public void setAmbient(float[] ambient){
@@ -211,4 +220,11 @@ public class BasicObject {
     	return this.zRot;
     }
     
+    public TextureParameters getTexParams(){
+    	return this.texParams;
+    }
+    
+    public void setTexParams(TextureParameters tex){
+    	this.texParams = tex;
+    }
 }

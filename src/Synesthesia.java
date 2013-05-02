@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -16,17 +17,21 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 //import javax.media.opengl.GL;
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
@@ -34,14 +39,51 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		public FloatBuffer vertexBuffer;
 		public IntBuffer faceBuffer;
 		public FloatBuffer normalBuffer;
+		public FloatBuffer texCoordBuffer;
 		public Point3f center;
 		public int num_verts;		// number of vertices
 		public int num_faces;		// number of triangle faces
 
-		public void Draw() {
+		public void Draw(Texture tex, TextureParameters params) {
 			vertexBuffer.rewind();
 			normalBuffer.rewind();
 			faceBuffer.rewind();
+			texCoordBuffer.rewind();
+			
+			float[] tiling = params.getTilingCoefficients();
+			
+			float[] zPlane = {0.0f, 0.0f, 1.0f *tiling[2], 0.0f};
+			float[] xPlane = {1.0f * tiling[0], 0.0f, 0.0f, 0.0f};
+			float[] yPlane = {0.0f, 1.0f * tiling[1], 0.0f, 0.0f};
+			
+			if (tex != null){
+				tex.enable(gl);
+				tex.bind(gl);
+				
+					if (params.getTexGenMode() == TextureParameters.texCoordGenMode.PLANE)
+					{
+						gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+						gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+				
+						//Wrapping
+						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+				
+						gl.glEnable(GL2.GL_TEXTURE_GEN_S);
+						gl.glEnable(GL2.GL_TEXTURE_GEN_T);
+						gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
+						gl.glTexGeni(GL2.GL_T, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
+						gl.glTexGenfv(GL2.GL_S, GL2.GL_OBJECT_PLANE, xPlane, 0);
+						gl.glTexGenfv(GL2.GL_T, GL2.GL_OBJECT_PLANE, zPlane, 0);
+					}
+					
+					else //Sphere
+					{
+						gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+						gl.glTexCoordPointer(2, GL2.GL_FLOAT, 0, texCoordBuffer);
+					}
+			}
+			
 			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 			gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 			
@@ -52,6 +94,18 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			
 			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 			gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+			
+			if (tex != null){
+				if (params.getTexGenMode() == TextureParameters.texCoordGenMode.PLANE){
+					gl.glDisable(GL2.GL_TEXTURE_GEN_S);
+					gl.glDisable(GL2.GL_TEXTURE_GEN_T);
+				}
+				else{ //Sphere
+					gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+				}
+				
+			tex.disable(gl);
+			}
 		}
 		
 		public objModel(String filename) {
@@ -168,9 +222,19 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				input_norms.get(i).normalize();
 			}
 			
+			//Calculate sphere texture coordinates
+			ArrayList<Point2f> tex_coords = new ArrayList<Point2f>();
+			for (int j = 0; j < input_norms.size(); j++){
+				Vector3f vertex = input_norms.get(j);
+				Point2f uv = new Point2f((float)((Math.asin(vertex.x)/Math.PI) + .5), (float)((Math.asin(vertex.y)/Math.PI) + .5));
+				tex_coords.add(uv);
+				
+			}
+			
 			vertexBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
 			normalBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
 			faceBuffer = Buffers.newDirectIntBuffer(input_faces.size());
+			texCoordBuffer = Buffers.newDirectFloatBuffer(input_norms.size()*2);
 			
 			for (i = 0; i < input_verts.size(); i ++) {
 				vertexBuffer.put(input_verts.get(i).x);
@@ -178,7 +242,9 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				vertexBuffer.put(input_verts.get(i).z);
 				normalBuffer.put(input_norms.get(i).x);
 				normalBuffer.put(input_norms.get(i).y);
-				normalBuffer.put(input_norms.get(i).z);			
+				normalBuffer.put(input_norms.get(i).z);	
+				texCoordBuffer.put(tex_coords.get(i).x);
+				texCoordBuffer.put(tex_coords.get(i).y);
 			}
 			
 			for (i = 0; i < input_faces.size(); i ++) {
@@ -330,7 +396,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	/* === YOUR WORK HERE === */
 	/* Define more models you need for constructing your scene */
 
-	private objModel cube = new objModel("floorobj.obj");
+	//private objModel cube = new objModel("floorobj.obj");
 
 	
 	private LevelOne levelOne = new LevelOne();
@@ -343,6 +409,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	
 	private boolean canMove = true;
 	HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
+	HashMap<String, Texture> textureMap = new HashMap<String, Texture>();
 	
 	
 	private float example_rotateT = 0.f;
@@ -364,8 +431,40 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("cube", new objModel("floorobj.obj"));
 		objectMap.put("plane", new objModel("plane.obj"));
 		objectMap.put("cylinder", new objModel("trunk.obj"));
-		objectMap.put("statue", new objModel("female.obj"));
+		objectMap.put("statue", new objModel("statue_sword_static.obj"));
 		objectMap.put("plant", new objModel("plant.obj"));
+		
+	}
+	
+	public void makeTextureMap(){
+		
+		ArrayList<String> filenames = new ArrayList<String>();
+		filenames.add("floor.png");
+		filenames.add("marble_tile2.jpg");
+		filenames.add("cool_tiles.png");
+		filenames.add("tiles.jpg");
+		
+		ArrayList<String> tex_names = new ArrayList<String>();
+		tex_names.add("floor");
+		tex_names.add("marble");
+		tex_names.add("tiles");
+		tex_names.add("tiles2");
+		
+		for (int i = 0; i < tex_names.size(); i++){
+		Texture tex = null;
+		try{
+			tex = TextureIO.newTexture(new File(filenames.get(i)), false);
+			
+		} catch (IOException e){
+			System.out.println("Could not open the file!");
+		}
+		
+		if (tex != null){
+			
+		}
+		
+		textureMap.put(tex_names.get(i), tex);
+		}
 		
 	}
 	
@@ -422,7 +521,15 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
 		    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
 		    
-		    objectMap.get(currentObject.getObject()).Draw();
+		  //  if (currentObject.getTexParams().isTextured() == false){
+		   // objectMap.get(currentObject.getObject()).Draw(null, currentObject.getTexParams());
+		    //}
+		    
+		   // else{
+		    	Texture tex = textureMap.get(currentObject.getTexParams().getTextureName());
+		    	objectMap.get(currentObject.getObject()).Draw(tex, currentObject.getTexParams());
+		    //}
+		    
 			//cube.Draw();
 			gl.glPopMatrix();
 		}
@@ -477,6 +584,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		initViewParameters();
 		
 		makeObjectMap();
+		makeTextureMap();
 		
 		gl.glClearColor(.1f, .1f, .1f, 1f);
 		gl.glClearDepth(1.0f);
