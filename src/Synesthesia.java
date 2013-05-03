@@ -667,12 +667,10 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("bottle", new objModel("bottle.obj"));
 		objectMap.put("tree_aspen",  new objModel("tree_aspen.obj"));
 		objectMap.put("sphere", new objModel("small_sphere.obj"));
-		objectMap.put("statue1", new objModel("statue_step_1.obj"));
-		objectMap.put("statue2", new objModel("statue_step_2.obj"));
-		objectMap.put("statue3", new objModel("statue_step_3.obj"));
-		objectMap.put("statue4", new objModel("statue_step_4.obj"));
-
-
+		objectMap.put("statue1", new objModel("statue_step_1_new_shoulder.obj"));
+		objectMap.put("statue2", new objModel("statue_step_2_new.obj"));
+		objectMap.put("statue3", new objModel("statue_step_3_new.obj"));
+		objectMap.put("statue4", new objModel("statue_step_4_new.obj"));
 
 		
 	}
@@ -682,14 +680,12 @@ public void makeTextureMap(){
 		ArrayList<String> filenames = new ArrayList<String>();
 		filenames.add("floor.png");
 		filenames.add("marble_tile2.jpg");
-		filenames.add("cool_tiles.png");
 		filenames.add("tiles.jpg");
 		filenames.add("sky_map.png");
 		
 		ArrayList<String> tex_names = new ArrayList<String>();
 		tex_names.add("floor");
 		tex_names.add("marble");
-		tex_names.add("tiles");
 		tex_names.add("tiles2");
 		tex_names.add("sky");
 		

@@ -140,8 +140,17 @@ public class Temple extends BasicLevel{
 		wall_L.setSpecular(zero_array);
 		wall_R.setSpecular(zero_array);
 		
+		TextureParameters wall_tex = new TextureParameters();
+		wall_tex.setTextured(true);
+		wall_tex.setTextureName("floor");
+		wall_tex.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
+		wall_tex.setTilingCoefficients(new float[]{1f, 1f, 4f});
+		wall_L.setTexParams(floor_tex);
+		wall_R.setTexParams(floor_tex);
+		
 		wall_L.setObject("plane");
 		wall_R.setObject("plane");
+		
 		
 		staticEntities.add(wall_L);
 		staticEntities.add(wall_R);
@@ -149,6 +158,15 @@ public class Temple extends BasicLevel{
 		BasicObject wall_back = new BasicObject(0f, -83f, 5f, 30f, 2.5f, 30f, 0f, 0f, 90f);
 		BasicObject wall_behind = new BasicObject(-5f, -3f, 5f, 25f, 2.5f, 25f, 0f, 0f, -90f);
 
+		TextureParameters behind_statue = new TextureParameters();
+		behind_statue.setTextured(true);
+		behind_statue.setTextureName("tiles2");
+		behind_statue.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
+		behind_statue.setTilingCoefficients(new float[]{1f,4f, 4f});
+		
+		wall_back.setTexParams(behind_statue);
+		
+		wall_behind.setTexParams(wall_tex);
 		wall_back.setDiffuse(wall_color);
 		wall_behind.setDiffuse(wall_color);
 		wall_behind.setSpecular(zero_array);
@@ -185,6 +203,7 @@ public class Temple extends BasicLevel{
 		//Pond and plants
 		BasicObject pond = new BasicObject(80, -.9f, 5f, 6f, 1f, 6f);
 		pond.setDiffuse(new float[]{.2f, .5f, .9f, 0f});
+		pond.setSpecular(zero_array);
 		pond.setObject("plane");
 		staticEntities.add(pond);
 		
@@ -193,6 +212,8 @@ public class Temple extends BasicLevel{
 		
 		plant_L.setDiffuse(new float[]{.5f, .9f, .2f, 0f});
 		plant_R.setDiffuse(new float[]{.5f, .9f, .2f, 0f});
+		plant_L.setSpecular(zero_array);
+		plant_R.setSpecular(zero_array);
 		
 		plant_L.setObject("plant");
 		plant_R.setObject("plant");
@@ -211,7 +232,7 @@ public class Temple extends BasicLevel{
 	}
 	@Override
 	public int getStartX(){
-		return 1;
+		return 70;
 	}
 	@Override
 	public int getStartZ(){
