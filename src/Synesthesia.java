@@ -32,6 +32,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -40,6 +41,8 @@ import com.jogamp.newt.Window;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
@@ -52,6 +55,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		public FloatBuffer vertexBuffer;
 		public IntBuffer faceBuffer;
 		public FloatBuffer normalBuffer;
+		public FloatBuffer texCoordBuffer;
 		public Point3f center;
 		public int num_verts;		// number of vertices
 		public int num_faces;		// number of triangle faces
@@ -74,8 +78,8 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				
 					if (params.getTexGenMode() == TextureParameters.texCoordGenMode.PLANE)
 					{
-						gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-						gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
+						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
 				
 						//Wrapping
 						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
@@ -584,7 +588,15 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	
 	private Set<Integer> pressed = new ConcurrentSkipListSet<Integer>();
 	
-	
+	 int dmx = 0; int dmy = 0;
+	 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = (int) screenSize.getWidth();
+		int height = (int) screenSize.getHeight();
+			//int x = e.getX();
+			//int y = e.getY();
+			
+			 int screenXDiv2=width>>1;
+	          int screenYDiv2=height>>1;
 	
 	
 	/* === YOUR WORK HERE === */
@@ -610,6 +622,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	private boolean collisionDetect = true;
 	HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
 	private ArrayList<BasicLevel> levelList = new ArrayList<BasicLevel>();
+	HashMap<String, Texture> textureMap = new HashMap<String, Texture>();
 	
 	private float example_rotateT = 0.f;
 	/* Here you should give a conservative estimate of the scene's bounding box
@@ -634,6 +647,38 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("plant", new objModel("plant.obj"));
 		objectMap.put("bottle", new objModel("bottle.obj"));
 		objectMap.put("tree_aspen",  new objModel("tree_aspen.obj"));
+		
+	}
+	
+public void makeTextureMap(){
+		
+		ArrayList<String> filenames = new ArrayList<String>();
+		filenames.add("floor.png");
+		filenames.add("marble_tile2.jpg");
+		filenames.add("cool_tiles.png");
+		filenames.add("tiles.jpg");
+		
+		ArrayList<String> tex_names = new ArrayList<String>();
+		tex_names.add("floor");
+		tex_names.add("marble");
+		tex_names.add("tiles");
+		tex_names.add("tiles2");
+		
+		for (int i = 0; i < tex_names.size(); i++){
+		Texture tex = null;
+		try{
+			tex = TextureIO.newTexture(new File(filenames.get(i)), false);
+			
+		} catch (IOException e){
+			System.out.println("Could not open the file!");
+		}
+		
+		if (tex != null){
+			
+		}
+		
+		textureMap.put(tex_names.get(i), tex);
+		}
 		
 	}
 	
@@ -679,14 +724,14 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		}
 	}
 	public void display(GLAutoDrawable drawable) {
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		
-		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, wireframe ? GL.GL_LINE : GL.GL_FILL);	
-		gl.glShadeModel(flatshade ? GL.GL_FLAT : GL.GL_SMOOTH);	
+		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, wireframe ? GL2.GL_LINE : GL2.GL_FILL);	
+		gl.glShadeModel(flatshade ? GL2.GL_FLAT : GL2.GL_SMOOTH);	
 		if (cullface)
-			gl.glEnable(GL.GL_CULL_FACE);
+			gl.glEnable(GL2.GL_CULL_FACE);
 		else
-			gl.glDisable(GL.GL_CULL_FACE);		
+			gl.glDisable(GL2.GL_CULL_FACE);		
 		
 		gl.glLoadIdentity();
 		
@@ -712,15 +757,105 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		/*
 		gl.glPushMatrix();
 		gl.glScalef(40,40,40);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_DIFFUSE, new float[]{.5f,.5f,.5f,1f}, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_DIFFUSE, new float[]{.5f,.5f,.5f,1f}, 0);
 		cube.Draw();
 		gl.glPopMatrix();
 		*/
+		if(nextLevel == 2){
+			gl.glPushMatrix();
+				gl.glTranslatef(15, 2, -2);
+				gl.glScalef(.01f, .005f, .005f);
+				gl.glRotatef(-90, 0, 2f, 0);
+				float[] tempdiffuse = { 1f, 1f, 0f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, new float[]{.5f,.5f,.5f,0}, 0);
+		    	glut.glutStrokeString(glut.STROKE_ROMAN, "A WALK IN THE DARK");
+		    	//gl.glTranslatef(-10, 0, 2);
+			gl.glPopMatrix();
+			
+			gl.glPushMatrix();
+				gl.glTranslatef(30, -.5f, -3);
+				gl.glScalef(.005f, .005f, .005f);
+				gl.glRotatef(225, 0, 1f, 0);
+				tempdiffuse = new float[]{ 0f, 1f, 1f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    	glut.glutStrokeString(glut.STROKE_ROMAN, "TIME TO REFLECT ON YOUR CURRENT SITUATION");
+		    	//gl.glTranslatef(-30, 0, -4);
+		    gl.glPopMatrix();
+		    
+			gl.glPushMatrix();
+				gl.glTranslatef(35, 1, -4);
+				gl.glScalef(.005f, .005f, .005f);
+				gl.glRotatef(-45, 0, 1, 0);
+				tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    	glut.glutStrokeString(glut.STROKE_ROMAN, "SURE IS EMPTY HERE, ISN'T IT?");
+		    	//gl.glTranslatef(-20, 0, -4);
+	    	gl.glPopMatrix();
+	    
+			gl.glPushMatrix();
+				gl.glTranslatef(55, 1.5f, 4);
+				gl.glScalef(.005f, .005f, .005f);
+				gl.glRotatef(225, 0, 1f, 0);
+				tempdiffuse = new float[]{ 1f, 0f, 0f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    	glut.glutStrokeString(glut.STROKE_ROMAN, "THERE'S SOMETHING BEYOND THE ROAD");
+	    	gl.glPopMatrix();
 		
+			gl.glPushMatrix();
+				gl.glTranslatef(58, 0, -12);
+				gl.glScalef(.005f, .005f, .005f);
+				gl.glRotatef(-45, 0, 1f, 0);
+				tempdiffuse = new float[]{ 0f, 0f, 1f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+			    glut.glutStrokeString(glut.STROKE_ROMAN, "DEEP IN THE DARK, CAN YOU SEE IT?");
+	    	gl.glPopMatrix();
+	    	
+			gl.glPushMatrix();
+				gl.glTranslatef(80, -.05f, 4);
+				gl.glScalef(.005f, .005f, .005f);
+				gl.glRotatef(225, 0, 1f, 0);
+				tempdiffuse = new float[]{ 0f, 1f, 0f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    	glut.glutStrokeString(glut.STROKE_ROMAN, "MIGHT AS WELL GO, THERE'S NOTHING ELSE");
+	    	gl.glPopMatrix();
+	    	
+			gl.glPushMatrix();
+				gl.glTranslatef(85, 0, -8);
+				gl.glScalef(.005f, .005f, .005f);
+				gl.glRotatef(-45, 0, 1f, 0);
+				tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+			    glut.glutStrokeString(glut.STROKE_ROMAN, "UNLESS... YOU'D LIKE TO STAY...");
+	    	gl.glPopMatrix();
+		
+			gl.glPushMatrix();
+				gl.glTranslatef(100, 1.5f, -3f);
+				gl.glScalef(.005f, .005f, .005f);
+				gl.glRotatef(90, 0, -1f, 0);
+		    	glut.glutStrokeString(glut.STROKE_ROMAN, "AND WRITE WORDS IN THE SKY");
+		    	//gl.glTranslatef(-20, 0, -4);
+	    	gl.glPopMatrix();
+	    	
+			gl.glPushMatrix();
+				gl.glTranslatef(100, -1f, 2f);
+				gl.glScalef(.01f, .01f, .01f);
+				gl.glRotatef(-90, 1f, 0f, 0f);
+				tempdiffuse = new float[]{ .8f, 0f, 1f, 0f};
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    	glut.glutStrokeString(glut.STROKE_ROMAN, "LET MY WORDS GUIDE YOU TO WHERE YOU THINK YOU NEED TO GO");
+		    	//gl.glTranslatef(-20, 0, -4);
+	    	gl.glPopMatrix();
+		}
 		for(final BasicObject currentObject : objects){
 			
 			gl.glPushMatrix();
 			currentObject.Move(xpos,ypos,zpos);
+			
+			gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
+		    gl.glRotatef(currentObject.getYRot(), 0f, 1f, 0f);
+		    gl.glRotatef(currentObject.getZRot(), 0f, 0f, 1f);
+			
 			gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
 		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getDiffuseColor(), 0);
 		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
@@ -735,7 +870,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			gl.glPopMatrix();
 		}
 
-if(interactiveObjects != null)
+		if(interactiveObjects != null)
 		for(final InteractiveObject currentObject : interactiveObjects){
 			
 			gl.glPushMatrix();
@@ -750,7 +885,8 @@ if(interactiveObjects != null)
 		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
 		    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
 		    
-		    objectMap.get(currentObject.getObject()).Draw();
+		    Texture tex = textureMap.get(currentObject.getTexParams().getTextureName());
+	    	objectMap.get(currentObject.getObject()).Draw(tex, currentObject.getTexParams());
 			//cube.Draw();
 			gl.glPopMatrix();
 		}
@@ -822,23 +958,23 @@ if(interactiveObjects != null)
 	    float light0_position[] = { 0, 5, 1, 0 };
 	    float light0_diffuse[] = { 1, 1, 1, 1 };
 	    float light0_specular[] = { 1, 1, 1, 1 };
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_POSITION, light0_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_DIFFUSE, light0_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_SPECULAR, light0_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_POSITION, light0_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light0_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_SPECULAR, light0_specular, 0);
 
 	    float light1_position[] = { -1, 0, 0, 0 };
 	    float light1_diffuse[] = { 1,1,1, 1 };
 	    float light1_specular[] = { 1,1,1, 1 };
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, light1_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_DIFFUSE, light1_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_SPECULAR, light1_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_POSITION, light1_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_DIFFUSE, light1_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_SPECULAR, light1_specular, 0);
 
 	    float light2_position[] = { 1, 0, 0, 0 };
 	    float light2_diffuse[] ={ 1,1,1, 1 };
 	    float light2_specular[] = { 1,1,1, 1 };
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_POSITION, light2_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_DIFFUSE, light2_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_SPECULAR, light2_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_POSITION, light2_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_DIFFUSE, light2_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_SPECULAR, light2_specular, 0);
 
 	    
 	    float light3_position[] = { 0, 0, -1f, 0 };
@@ -853,30 +989,30 @@ if(interactiveObjects != null)
 	    float mat_specular[] = { .8f, .8f, .8f, 1 };
 	    float mat_diffuse[] = { .4f, .4f, .4f, 1 };
 	    float mat_shininess[] = { 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 
 	    float bmat_ambient[] = { 0, 0, 0, 1 };
 	    float bmat_specular[] = { 0, .8f, .8f, 1 };
 	    float bmat_diffuse[] = { 0, .4f, .4f, 1 };
 	    float bmat_shininess[] = { 128 };
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_AMBIENT, bmat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_SPECULAR, bmat_specular, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_DIFFUSE, bmat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_SHININESS, bmat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_AMBIENT, bmat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_SPECULAR, bmat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_DIFFUSE, bmat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_SHININESS, bmat_shininess, 0);
 
 	    float lmodel_ambient[] = { 0, 0, 0, 1 };
-	    gl.glLightModelfv( GL.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient, 0);
-	    gl.glLightModeli( GL.GL_LIGHT_MODEL_TWO_SIDE, 1 );
+	    gl.glLightModelfv( GL2.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient, 0);
+	    gl.glLightModeli( GL2.GL_LIGHT_MODEL_TWO_SIDE, 1 );
 
-	    gl.glEnable( GL.GL_NORMALIZE );
-	    gl.glEnable( GL.GL_LIGHTING );
-	    gl.glEnable( GL.GL_LIGHT0 );
-	    gl.glEnable( GL.GL_LIGHT1 );
-	    gl.glEnable( GL.GL_LIGHT2 );
-	    gl.glEnable( GL.GL_LIGHT3);
+	    gl.glEnable( GL2.GL_NORMALIZE );
+	    gl.glEnable( GL2.GL_LIGHTING );
+	    gl.glEnable( GL2.GL_LIGHT0 );
+	    gl.glEnable( GL2.GL_LIGHT1 );
+	    gl.glEnable( GL2.GL_LIGHT2 );
+	    gl.glEnable( GL2.GL_LIGHT3);
 
 	    gl.glEnable(GL2.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL2.GL_LESS);
@@ -891,10 +1027,10 @@ if(interactiveObjects != null)
 		winH = height;
 
 		gl.glViewport(0, 0, width, height);
-		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glMatrixMode(GL2.GL_PROJECTION);
 			gl.glLoadIdentity();
 			glu.gluPerspective(45.f, (float)width/(float)height, znear, zfar);
-		gl.glMatrixMode(GL.GL_MODELVIEW);
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 	
 	public void mousePressed(MouseEvent e) {	
@@ -972,13 +1108,11 @@ if(interactiveObjects != null)
 	}
 	//public void mouseMoved(MouseEvent e) { }
 	public void mouseMoved(MouseEvent e) { 
-		/*if(this.mouseLock == false){
+		if(this.mouseLock == false){
 		//	this.mouseLock=true;
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int width = (int) screenSize.getWidth();
-		int height = (int) screenSize.getHeight();
-			int x = e.getX();
-			int y = e.getY();
+		
+	          
+	          /*
 			if((x < (width/2) +20 && x >(width/2) -20) ){
 				//return;
 			}
@@ -1024,7 +1158,29 @@ if(interactiveObjects != null)
 			this.mouseLock = false;
 		}
 		*/
+	          
+	         int mx=e.getXOnScreen();
+	          int my=e.getYOnScreen();
+	          if(mx!=screenXDiv2 || my!=screenYDiv2)
+	          {
+	             if(mx!=screenXDiv2)
+	             {
+	                dmx+=mx-screenXDiv2;
+	             }
+	             if(my!=screenYDiv2)
+	             {
+	                dmy+=my-screenYDiv2;   
+	             }
+	             robot.mouseMove(screenXDiv2, screenYDiv2);
+	             
+	             roth = (float) (dmx *.1);
+		         rotv = (float)(dmy *.1);
+	          }
+	          
+	          
+	          
 		}
+	}
 	///
 	
 	public void actionPerformed(ActionEvent e) { }
