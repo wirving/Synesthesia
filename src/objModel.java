@@ -7,39 +7,44 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCanvas;
+import javax.media.opengl.awt.GLCanvas;
+import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
+import javax.swing.JFrame;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import com.sun.opengl.util.BufferUtil;
-import com.sun.opengl.util.FPSAnimator;
+
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.util.FPSAnimator;
 
 
-public class objModel {
+class objModel {
 	public FloatBuffer vertexBuffer;
 	public IntBuffer faceBuffer;
 	public FloatBuffer normalBuffer;
 	public Point3f center;
 	public int num_verts;		// number of vertices
 	public int num_faces;		// number of triangle faces
-	public GL gl;
-
+	public GL2 gl;
+	public String name; //name of model
+	
 	public void Draw() {
 		vertexBuffer.rewind();
 		normalBuffer.rewind();
 		faceBuffer.rewind();
-		gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 		
-		gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertexBuffer);
-		gl.glNormalPointer(GL.GL_FLOAT, 0, normalBuffer);
+		gl.glVertexPointer(3, GL2.GL_FLOAT, 0, vertexBuffer);
+		gl.glNormalPointer(GL2.GL_FLOAT, 0, normalBuffer);
 		
-		gl.glDrawElements(GL.GL_TRIANGLES, num_faces*3, GL.GL_UNSIGNED_INT, faceBuffer);
+		gl.glDrawElements(GL2.GL_TRIANGLES, num_faces*3, GL2.GL_UNSIGNED_INT, faceBuffer);
 		
-		gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+		gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
 	}
 	
 	public objModel(String filename) {
@@ -156,9 +161,9 @@ public class objModel {
 			input_norms.get(i).normalize();
 		}
 		
-		vertexBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-		normalBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-		faceBuffer = BufferUtil.newIntBuffer(input_faces.size());
+		vertexBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+		normalBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+		faceBuffer = Buffers.newDirectIntBuffer(input_faces.size());
 		
 		for (i = 0; i < input_verts.size(); i ++) {
 			vertexBuffer.put(input_verts.get(i).x);

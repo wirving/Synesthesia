@@ -1,3 +1,7 @@
+import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -5,41 +9,41 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-import javax.media.opengl.*;
+//import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.awt.GLCanvas;
+import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import com.sun.opengl.util.BufferUtil;
-import com.sun.opengl.util.FPSAnimator;
-import com.sun.opengl.util.GLUT;
-
-import java.awt.Robot;
-import java.awt.AWTException; 
-import java.awt.Toolkit;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.newt.Window;
+import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
-	/* This defines the objModel class, which takes care
-	 * of loading a triangular mesh from an obj file,
-	 * estimating per vertex average normal,
-	 * and displaying the mesh.
-	 */
-	public class objModel {
+	class objModel {
 		public FloatBuffer vertexBuffer;
 		public IntBuffer faceBuffer;
 		public FloatBuffer normalBuffer;
@@ -51,16 +55,16 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			vertexBuffer.rewind();
 			normalBuffer.rewind();
 			faceBuffer.rewind();
-			gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-			gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+			gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 			
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertexBuffer);
-			gl.glNormalPointer(GL.GL_FLOAT, 0, normalBuffer);
+			gl.glVertexPointer(3, GL2.GL_FLOAT, 0, vertexBuffer);
+			gl.glNormalPointer(GL2.GL_FLOAT, 0, normalBuffer);
 			
-			gl.glDrawElements(GL.GL_TRIANGLES, num_faces*3, GL.GL_UNSIGNED_INT, faceBuffer);
+			gl.glDrawElements(GL2.GL_TRIANGLES, num_faces*3, GL2.GL_UNSIGNED_INT, faceBuffer);
 			
-			gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+			gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
 		}
 		
 		public objModel(String filename) {
@@ -177,9 +181,9 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				input_norms.get(i).normalize();
 			}
 			
-			vertexBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-			normalBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-			faceBuffer = BufferUtil.newIntBuffer(input_faces.size());
+			vertexBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+			normalBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+			faceBuffer = Buffers.newDirectIntBuffer(input_faces.size());
 			
 			for (i = 0; i < input_verts.size(); i ++) {
 				vertexBuffer.put(input_verts.get(i).x);
@@ -205,23 +209,23 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			for(Integer key : pressed){
 		switch(key) {
 		case KeyEvent.VK_ESCAPE:
-		case KeyEvent.VK_Q:
+		case (int)'Q':
 			System.exit(0);
 			break;		
-		case 'r':
-		case 'R':
+		case (int) 'r':
+		case (int) 'R':
 			initViewParameters();
 			break;
 		/*case 'w':
 		case 'W':
 			wireframe = ! wireframe;
 			break;*/
-		case 'b':
-		case 'B':
+		case (int) 'b':
+		case (int) 'B':
 			cullface = !cullface;
 			break;
-		case 'f':
-		case 'F':
+		case (int) 'f':
+		case (int) 'F':
 			flatshade = !flatshade;
 			break;
 		/*case 'a':
@@ -231,77 +235,255 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			else 
 				animator.start();
 			break;*/
-		case '+':
-		case '=':
+		case (int) '+':
+		case (int) '=':
 			animation_speed *= 1.2f;
 			break;
-		case '-':
-		case '_':
+		case (int) '-':
+		case (int) '_':
 			animation_speed /= 1.2;
 			break;
-		case KeyEvent.VK_UP:
-		case 'I':
-			   float xrotrad, yrotrad;
-			   if(canMove){
-			    yrotrad = (roth / 180 * 3.141592654f);
-			    xrotrad = (rotv / 180 * 3.141592654f); 
-			    xpos += (float)(Math.sin(yrotrad))/10 ;
-			    zpos -= (float)(Math.cos(yrotrad))/10 ;
+		//case KeyEvent.VK_UP:
+		//case (int) 'I':
+		case (int) 'W':
+		   float xrotrad, yrotrad;
+			xrotrad = (rotv / 180 * 3.141592654f); 
+			yrotrad = (roth / 180 * 3.141592654f);
+
+			   if(collisionDetect){
+				    //need to conditionally floor/ceiling i think
+				    double deltaX = (Math.sin(yrotrad))/10;
+				    double deltaZ = (Math.cos(yrotrad))/10;
+				    double xOffset = 0;
+				    double zOffset = 0;
+				    int yOffset = 0;
+				    int newX;
+				    int newZ;
+				    if(deltaX >= 0){
+				    	xOffset = -0.25;
+				    	newX = (int) (Math.ceil(xpos+deltaX+xOffset));
+				    }
+				    else{
+				    	xOffset = 0.25;
+				    	newX = (int) (Math.floor(xpos+deltaX+xOffset));
+				    }
+				    if(deltaZ >= 0){
+				    	zOffset = .25;
+				    	newZ = (int) (Math.floor(zpos-deltaZ+zOffset));
+				    }
+				    else{
+				    	zOffset = -.25;
+				    	newZ = (int) (Math.ceil(zpos-deltaZ+zOffset));
+				    }
+				    if(collisionArray != null){
+						if(collisionArray[newX][newZ] == false){
+						    xpos += (float)(Math.sin(yrotrad))/10 ;
+						    zpos -= (float)(Math.cos(yrotrad))/10 ;
+						 }
+				    }
+				    else{
+					    xpos += (float)(Math.sin(yrotrad))/10 ;
+					    zpos -= (float)(Math.cos(yrotrad))/10 ;
+				    }
+			   }
+			   else{
+				   xpos += (float)(Math.sin(yrotrad))/10 ;
+				   zpos -= (float)(Math.cos(yrotrad))/10 ;
 			   }
 			break;
-		case KeyEvent.VK_DOWN:
-		case 'K':
-			if(canMove){
-			 yrotrad = (roth / 180 * 3.141592654f);
-			 xrotrad = (rotv / 180 * 3.141592654f); 
-			 xpos -= (float)(Math.sin(yrotrad))/10 ;
-			 zpos += (float)(Math.cos(yrotrad))/10 ;
-			}
+		//case KeyEvent.VK_DOWN:
+		//case (int) 'K':
+		case (int) 'S':
+			
+			//float xrotrad, yrotrad;
+		xrotrad = (rotv / 180 * 3.141592654f); 
+		yrotrad = (roth / 180 * 3.141592654f);
+
+		   if(collisionDetect){
+			    //need to conditionally floor/ceiling i think
+			    double deltaX = (Math.sin(yrotrad))/10;
+			    double deltaZ = (Math.cos(yrotrad))/10;
+			    double xOffset = 0;
+			    double zOffset = 0;
+			    int newX;
+			    int newZ;
+			    if(deltaX >= 0){
+			    	xOffset = 0.25;
+			    	newX = (int) (Math.floor(xpos+deltaX+xOffset));
+			    }
+			    else{
+			    	xOffset = -0.25;
+			    	newX = (int) (Math.ceil(xpos+deltaX+xOffset));
+			    }
+			    if(deltaZ >= 0){
+			    	zOffset = -.25;
+			    	newZ = (int) (Math.ceil(zpos-deltaZ+zOffset));
+			    }
+			    else{
+			    	zOffset = .25;
+			    	newZ = (int) (Math.floor(zpos-deltaZ+zOffset));
+			    }
+			    if(collisionArray != null){
+					if(collisionArray[newX][newZ] == false){
+					    xpos -= (float)(Math.sin(yrotrad))/10 ;
+					    zpos += (float)(Math.cos(yrotrad))/10 ;
+					 }
+			    }
+			    else{
+				    xpos -= (float)(Math.sin(yrotrad))/10 ;
+				    zpos += (float)(Math.cos(yrotrad))/10 ;
+			    }
+		   }
+		   else{
+			   xpos -= (float)(Math.sin(yrotrad))/10 ;
+			   zpos += (float)(Math.cos(yrotrad))/10 ;
+		   }
+		   
 			break;
 			
-		case KeyEvent.VK_LEFT:
-		case 'J':
-			if(canMove){
-		    yrotrad = (roth / 180 * 3.141592654f);
-		    xpos -= (float)(Math.cos(yrotrad)) * 0.1;
-		    zpos -= (float)(Math.sin(yrotrad)) * 0.1;
-			}
+		//case KeyEvent.VK_LEFT:
+		//case (int) 'J':
+		case (int) 'A':
+		xrotrad = (rotv / 180 * 3.141592654f); 
+		yrotrad = (roth / 180 * 3.141592654f);
+
+		   if(collisionDetect){
+			    //need to conditionally floor/ceiling i think
+			    double deltaX = (Math.cos(yrotrad))/10;
+			    double deltaZ = (Math.sin(yrotrad))/10;
+			    double xOffset = 0;
+			    double zOffset = 0;
+			    int yOffset = 0;
+			    int newX;
+			    int newZ;
+			    if(deltaX >= 0){
+			    	xOffset = 0.25;
+			    	newX = (int) (Math.floor(xpos+deltaX+xOffset));
+			    }
+			    else{
+			    	xOffset = -0.25;
+			    	newX = (int) (Math.ceil(xpos+deltaX+xOffset));
+			    }
+			    if(deltaZ >= 0){
+			    	zOffset = .25;
+			    	newZ = (int) (Math.floor(zpos-deltaZ+zOffset));
+			    }
+			    else{
+			    	zOffset = -.25;
+			    	newZ = (int) (Math.ceil(zpos-deltaZ+zOffset));
+			    }
+			    if(collisionArray != null){
+					if(collisionArray[newX][newZ] == false){
+					    xpos -= (float)(Math.cos(yrotrad))/10 ;
+					    zpos -= (float)(Math.sin(yrotrad))/10 ;
+					 }
+			    }
+			    else{
+				    xpos -= (float)(Math.cos(yrotrad))/10 ;
+				    zpos -= (float)(Math.sin(yrotrad))/10 ;
+			    }
+		   }
+		   else{
+			   xpos -= (float)(Math.cos(yrotrad))/10 ;
+			   zpos -= (float)(Math.sin(yrotrad))/10 ;
+		   }
+		   
+		
 
 			break;
 		
-		case KeyEvent.VK_RIGHT:
-		case 'L':
-			if(canMove){
-		    yrotrad = (roth / 180 * 3.141592654f);
-		    xpos += (float)(Math.cos(yrotrad)) * 0.1;
-		    zpos += (float)(Math.sin(yrotrad)) * 0.1;
-			}
+		//case KeyEvent.VK_RIGHT:
+		//case (int) 'L':
+		case (int) 'D':
+			
+		xrotrad = (rotv / 180 * 3.141592654f); 
+		yrotrad = (roth / 180 * 3.141592654f);
+
+		   if(collisionDetect){
+			    //need to conditionally floor/ceiling i think
+			    double deltaX = (Math.cos(yrotrad))/10;
+			    double deltaZ = (Math.sin(yrotrad))/10;
+			    double xOffset = 0;
+			    double zOffset = 0;
+			    int newX;
+			    int newZ;
+			    if(deltaX >= 0){
+			    	xOffset = -0.25;
+			    	newX = (int) (Math.ceil(xpos+deltaX+xOffset));
+			    }
+			    else{
+			    	xOffset = 0.25;
+			    	newX = (int) (Math.floor(xpos+deltaX+xOffset));
+			    }
+			    if(deltaZ >= 0){
+			    	zOffset = -.25;
+			    	newZ = (int) (Math.ceil(zpos-deltaZ+zOffset));
+			    }
+			    else{
+			    	zOffset = .25;
+			    	newZ = (int) (Math.floor(zpos-deltaZ+zOffset));
+			    }
+			    if(collisionArray != null){
+					if(collisionArray[newX][newZ] == false){
+					    xpos += (float)(Math.cos(yrotrad))/10 ;
+					    zpos += (float)(Math.sin(yrotrad))/10 ;
+					 }
+			    }
+			    else{
+				    xpos += (float)(Math.cos(yrotrad))/10 ;
+				    zpos += (float)(Math.sin(yrotrad))/10 ;
+			    }
+		   }
+		   else{
+			   xpos += (float)(Math.cos(yrotrad))/10 ;
+			   zpos += (float)(Math.sin(yrotrad))/10 ;
+		   }
 			break;
 			
-		case 'a':
-		case 'A':
-			roth -= 2f;
+		//case (int) 'a':
+		//case (int) 'A':
+		case KeyEvent.VK_LEFT:
+			roth -= 2f; //Smaller value will be smoother but slower
 			if(roth < 360)
 				roth += 360;
 			break;
 			
-		case 'd':
-		case 'D':
+		//case (int) 'd':
+		//case (int) 'D':
+		case KeyEvent.VK_RIGHT:
 			roth += 2f;
 			if(roth > -360)
 				roth -= 360;
 			break;
-		case 'w':
-		case 'W':
+		//case (int) 'w':
+		//case (int) 'W':
+		case KeyEvent.VK_UP:
 			rotv -= 2f;
 			if(rotv < -360)
 				rotv += 360;
 			break;
-		case 's':
-		case 'S':
+		//case (int) 's':
+		//case (int) 'S':
+		case KeyEvent.VK_DOWN:
 			rotv += 2f;
 			if(rotv > 360)
 				rotv -= 360;
+			break;
+			
+			//Turn Collision Detection On and Off
+		case (int)'O':
+			collisionDetect = !collisionDetect;
+			break;
+		case KeyEvent.VK_SPACE:
+			for(InteractiveObject currentObject: interactiveObjects){
+		    	if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < 2 ){
+		    		nextLevel();
+		    	}
+			}
+			break;
+		case (int) 'P':
+			nextLevel();
+		break;
 		default:
 			break;
 		}
@@ -314,8 +496,12 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	
 	/* GL, display, model transformation, and mouse control variables */
 	private final GLCanvas canvas;
-	private GL gl;
+	private GL2 gl;
+	private GLUT glut = new GLUT();
 	private final GLU glu = new GLU();
+	private Robot robot;
+	private boolean mouseLock=false;
+	private GLWindow window; 
 	private FPSAnimator animator;
 
 	private int winW = 800, winH = 800;
@@ -339,16 +525,26 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	/* === YOUR WORK HERE === */
 	/* Define more models you need for constructing your scene */
 
-	private objModel cube = new objModel("floorobj.obj");
+	//private objModel cube = new objModel("floorobj.obj");
 
-	
+	private int nextLevel =0;
 	private LevelOne levelOne = new LevelOne();
-	//private LevelTwo levelTwo = new LevelTwo();
-	private ArrayList<BasicObject> objects = levelOne.getStaticEntities();
-	//private ArrayList<BasicObject> objects = levelTwo.getStaticEntities();
+	private Transition1 transition1 = new Transition1();
+	private LevelTwo levelTwo = new LevelTwo();
+	private Temple temple = new Temple();
 	
-	private boolean canMove = true;
-	//HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
+	Clip clip;
+	File soundFile;
+	AudioInputStream ais;
+	
+	//For temple set light0 position to {0, 5, 1, 0}
+	private ArrayList<BasicObject> objects;
+	private ArrayList<InteractiveObject> interactiveObjects;
+	private Boolean[][] collisionArray; 
+	
+	private boolean collisionDetect = true;
+	HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
+	private ArrayList<BasicLevel> levelList = new ArrayList<BasicLevel>();
 	
 	private float example_rotateT = 0.f;
 	/* Here you should give a conservative estimate of the scene's bounding box
@@ -362,33 +558,93 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	private float float_translate = 0.f;
 	private int float_counter = 0;
 	private boolean up = true;
-	public void display(GLAutoDrawable drawable) {
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+	
+	//Do this every time we load a new level?
+	public void makeObjectMap(){
 		
-		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, wireframe ? GL.GL_LINE : GL.GL_FILL);	
-		gl.glShadeModel(flatshade ? GL.GL_FLAT : GL.GL_SMOOTH);	
+		objectMap.put("cube", new objModel("floorobj.obj"));
+		objectMap.put("plane", new objModel("plane.obj"));
+		objectMap.put("cylinder", new objModel("trunk.obj"));
+		objectMap.put("statue", new objModel("female.obj"));
+		objectMap.put("plant", new objModel("plant.obj"));
+		objectMap.put("bottle", new objModel("bottle.obj"));
+		objectMap.put("tree_aspen",  new objModel("tree_aspen.obj"));
+		
+	}
+	
+	public void makeLevelList(){
+		levelList.add(levelOne);
+		levelList.add(transition1);
+		levelList.add(levelTwo);
+		levelList.add(temple);
+		nextLevel();
+	}
+	
+	public void nextLevel(){
+		BasicLevel level = levelList.get(nextLevel);
+		objects = level.getStaticEntities();
+		interactiveObjects = level.getInteractiveEntities();
+		collisionArray = level.getCollisionArray();
+		xpos = level.getStartX();
+		zpos = level.getStartZ();
+		changeMusic(level.getLevelMusic());
+		nextLevel = (nextLevel+1)%levelList.size();
+	}
+	
+	public void changeMusic(String fileName){
+		try{
+			if(clip != null){
+				clip.close();
+			}
+		clip = AudioSystem.getClip();
+		soundFile = new File(fileName);
+        ais = AudioSystem.
+            getAudioInputStream( soundFile );
+        clip.open(ais);
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+		} catch (LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void display(GLAutoDrawable drawable) {
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+		
+		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, wireframe ? GL2.GL_LINE : GL2.GL_FILL);	
+		gl.glShadeModel(flatshade ? GL2.GL_FLAT : GL2.GL_SMOOTH);	
 		if (cullface)
-			gl.glEnable(GL.GL_CULL_FACE);
+			gl.glEnable(GL2.GL_CULL_FACE);
 		else
-			gl.glDisable(GL.GL_CULL_FACE);		
+			gl.glDisable(GL2.GL_CULL_FACE);		
 		
 		gl.glLoadIdentity();
 		
 		/* this is the transformation of the entire scene */
+		
+
+		
 		gl.glTranslatef(centerx, centery, centerz);
+		
 		gl.glRotatef(rotv, 1.0f, 0, 0);
-
+		
 		gl.glRotatef(roth, 0, 1.0f, 0);
-		gl.glTranslatef(-centerx, -centery, -centerz);	
+		gl.glTranslatef(-centerx, -centery, -centerz);
+		
 
+		
 		gl.glTranslatef(-xpos, -ypos, -zpos);
-
+		
 		/* === YOUR WORK HERE === */
 		
 		/* Below is an example of a rotating bunny
 		 * It rotates the bunny with example_rotateT degrees around the bunny's gravity center  
 		 */
-		
 		
 		gl.glPushMatrix();
 		
@@ -396,24 +652,138 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		/*
 		gl.glPushMatrix();
 		gl.glScalef(40,40,40);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_DIFFUSE, new float[]{.5f,.5f,.5f,1f}, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_DIFFUSE, new float[]{.5f,.5f,.5f,1f}, 0);
 		cube.Draw();
 		gl.glPopMatrix();
 		*/
+		if(nextLevel == 2){
+		gl.glPushMatrix();
+			gl.glTranslatef(15, 2, -2);
+			gl.glScalef(.01f, .005f, .005f);
+			gl.glRotatef(-90, 0, 2f, 0);
+			float[] tempdiffuse = { 1f, 1f, 0f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, new float[]{.5f,.5f,.5f,0}, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "A WALK IN THE DARK");
+	    	//gl.glTranslatef(-10, 0, 2);
+		gl.glPopMatrix();
 		
+		gl.glPushMatrix();
+			gl.glTranslatef(30, -.5f, -3);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(225, 0, 1f, 0);
+			tempdiffuse = new float[]{ 0f, 1f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "TIME TO REFLECT ON YOUR CURRENT SITUATION");
+	    	//gl.glTranslatef(-30, 0, -4);
+	    gl.glPopMatrix();
+	    
+		gl.glPushMatrix();
+			gl.glTranslatef(35, 1, -4);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(-45, 0, 1, 0);
+			tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "SURE IS EMPTY HERE, ISN'T IT?");
+	    	//gl.glTranslatef(-20, 0, -4);
+    	gl.glPopMatrix();
+    
+		gl.glPushMatrix();
+			gl.glTranslatef(55, 1.5f, 4);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(225, 0, 1f, 0);
+			tempdiffuse = new float[]{ 1f, 0f, 0f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "THERE'S SOMETHING BEYOND THE ROAD");
+    	gl.glPopMatrix();
+	
+		gl.glPushMatrix();
+			gl.glTranslatef(58, 0, -12);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(-45, 0, 1f, 0);
+			tempdiffuse = new float[]{ 0f, 0f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    glut.glutStrokeString(glut.STROKE_ROMAN, "DEEP IN THE DARK, CAN YOU SEE IT?");
+    	gl.glPopMatrix();
+    	
+		gl.glPushMatrix();
+			gl.glTranslatef(80, -.05f, 4);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(225, 0, 1f, 0);
+			tempdiffuse = new float[]{ 0f, 1f, 0f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "MIGHT AS WELL GO, THERE'S NOTHING ELSE");
+    	gl.glPopMatrix();
+    	
+		gl.glPushMatrix();
+			gl.glTranslatef(85, 0, -8);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(-45, 0, 1f, 0);
+			tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    glut.glutStrokeString(glut.STROKE_ROMAN, "UNLESS... YOU'D LIKE TO STAY...");
+    	gl.glPopMatrix();
+	
+		gl.glPushMatrix();
+			gl.glTranslatef(100, 1.5f, -3f);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(90, 0, -1f, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "AND WRITE WORDS IN THE SKY");
+	    	//gl.glTranslatef(-20, 0, -4);
+    	gl.glPopMatrix();
+    	
+		gl.glPushMatrix();
+			gl.glTranslatef(100, -1f, 2f);
+			gl.glScalef(.01f, .01f, .01f);
+			gl.glRotatef(-90, 1f, 0f, 0f);
+			tempdiffuse = new float[]{ .8f, 0f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "LET MY WORDS GUIDE YOU TO WHERE YOU THINK YOU NEED TO GO");
+	    	//gl.glTranslatef(-20, 0, -4);
+    	gl.glPopMatrix();
+	
+		}
 		for(final BasicObject currentObject : objects){
 			
 			gl.glPushMatrix();
 			currentObject.Move(xpos,ypos,zpos);
+			
+		    gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
+		    gl.glRotatef(currentObject.getYRot(), 0f, 1f, 0f);
+		    gl.glRotatef(currentObject.getZRot(), 0f, 0f, 1f);
+		    
 			gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
-		    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, currentObject.getDiffuseFlicker(), 0);
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getDiffuseColor(), 0);
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
+		    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
+		    
+		    objectMap.get(currentObject.getObject()).Draw();
+			//cube.Draw();		
 
-			cube.Draw();
+			gl.glPopMatrix();
+		}
+		if(interactiveObjects != null)
+		for(final InteractiveObject currentObject : interactiveObjects){
+			
+			gl.glPushMatrix();
+			currentObject.Move(xpos,ypos,zpos);
+			
+		    gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
+		    gl.glRotatef(currentObject.getYRot(), 0f, 1f, 0f);
+		    gl.glRotatef(currentObject.getZRot(), 0f, 0f, 1f);
+		    
+			gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getDiffuseColor(), 0);
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
+		    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
+		    
+		    objectMap.get(currentObject.getObject()).Draw();
+			//cube.Draw();
 			gl.glPopMatrix();
 		}
 		
 		gl.glPopMatrix(); //End Drawing
-		
+	
 		/* increment example_rotateT */
 		if (animator.isAnimating())
 			example_rotateT += 1.0f * animation_speed;
@@ -457,79 +827,89 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	}
 	
 	public void init(GLAutoDrawable drawable) {
-		gl = drawable.getGL();
+		gl = drawable.getGL().getGL2();
 
 		initViewParameters();
+		
+		makeObjectMap();
+		makeLevelList();
+		
 		gl.glClearColor(.1f, .1f, .1f, 1f);
 		gl.glClearDepth(1.0f);
 
-	    // white light at the eye
-	    float light0_position[] = { 0, 0, 1, 0 };
+		try {
+			robot = new Robot();
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		//Eventually set lights based on scene description
+	    float light0_position[] = { 0, 5, 1, 0 };
 	    float light0_diffuse[] = { 1, 1, 1, 1 };
 	    float light0_specular[] = { 1, 1, 1, 1 };
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_POSITION, light0_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_DIFFUSE, light0_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_SPECULAR, light0_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_POSITION, light0_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light0_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_SPECULAR, light0_specular, 0);
 
 	    float light1_position[] = { -1, 0, 0, 0 };
 	    float light1_diffuse[] = { 1,1,1, 1 };
 	    float light1_specular[] = { 1,1,1, 1 };
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, light1_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_DIFFUSE, light1_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_SPECULAR, light1_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_POSITION, light1_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_DIFFUSE, light1_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_SPECULAR, light1_specular, 0);
 
 	    float light2_position[] = { 1, 0, 0, 0 };
 	    float light2_diffuse[] ={ 1,1,1, 1 };
 	    float light2_specular[] = { 1,1,1, 1 };
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_POSITION, light2_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_DIFFUSE, light2_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_SPECULAR, light2_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_POSITION, light2_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_DIFFUSE, light2_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_SPECULAR, light2_specular, 0);
 
 	    
 	    float light3_position[] = { 0, 0, -1f, 0 };
 	    float light3_diffuse[] = { 1,1,1, 1 };
 	    float light3_specular[] = { 1,1,1,1 };
-	    gl.glLightfv( GL.GL_LIGHT3, GL.GL_POSITION, light3_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT3, GL.GL_DIFFUSE, light3_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT3, GL.GL_SPECULAR, light3_specular, 0);
-	    
+	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_POSITION, light3_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_DIFFUSE, light3_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_SPECULAR, light3_specular, 0);
 	    
 	    //material
 	    float mat_ambient[] = { 0, 0, 0, 1 };
 	    float mat_specular[] = { .8f, .8f, .8f, 1 };
 	    float mat_diffuse[] = { .4f, .4f, .4f, 1 };
 	    float mat_shininess[] = { 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 
 	    float bmat_ambient[] = { 0, 0, 0, 1 };
 	    float bmat_specular[] = { 0, .8f, .8f, 1 };
 	    float bmat_diffuse[] = { 0, .4f, .4f, 1 };
 	    float bmat_shininess[] = { 128 };
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_AMBIENT, bmat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_SPECULAR, bmat_specular, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_DIFFUSE, bmat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_SHININESS, bmat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_AMBIENT, bmat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_SPECULAR, bmat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_DIFFUSE, bmat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_SHININESS, bmat_shininess, 0);
 
 	    float lmodel_ambient[] = { 0, 0, 0, 1 };
-	    gl.glLightModelfv( GL.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient, 0);
-	    gl.glLightModeli( GL.GL_LIGHT_MODEL_TWO_SIDE, 1 );
+	    gl.glLightModelfv( GL2.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient, 0);
+	    gl.glLightModeli( GL2.GL_LIGHT_MODEL_TWO_SIDE, 1 );
 
-	    gl.glEnable( GL.GL_NORMALIZE );
-	    gl.glEnable( GL.GL_LIGHTING );
-	    gl.glEnable( GL.GL_LIGHT0 );
-	    gl.glEnable( GL.GL_LIGHT1 );
-	    gl.glEnable( GL.GL_LIGHT2 );
-	    gl.glEnable( GL.GL_LIGHT3);
+	    gl.glEnable( GL2.GL_NORMALIZE );
+	    gl.glEnable( GL2.GL_LIGHTING );
+	    gl.glEnable( GL2.GL_LIGHT0 );
+	    gl.glEnable( GL2.GL_LIGHT1 );
+	    gl.glEnable( GL2.GL_LIGHT2 );
+	    gl.glEnable( GL2.GL_LIGHT3);
 
-	    gl.glEnable(GL.GL_DEPTH_TEST);
-		gl.glDepthFunc(GL.GL_LESS);
-		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
-		gl.glCullFace(GL.GL_BACK);
-		gl.glEnable(GL.GL_CULL_FACE);
-		gl.glShadeModel(GL.GL_SMOOTH);		
+	    gl.glEnable(GL2.GL_DEPTH_TEST);
+		gl.glDepthFunc(GL2.GL_LESS);
+		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
+		gl.glCullFace(GL2.GL_BACK);
+		gl.glEnable(GL2.GL_CULL_FACE);
+		gl.glShadeModel(GL2.GL_SMOOTH);	
 	}
 	
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -537,10 +917,10 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		winH = height;
 
 		gl.glViewport(0, 0, width, height);
-		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glMatrixMode(GL2.GL_PROJECTION);
 			gl.glLoadIdentity();
 			glu.gluPerspective(45.f, (float)width/(float)height, znear, zfar);
-		gl.glMatrixMode(GL.GL_MODELVIEW);
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 	
 	public void mousePressed(MouseEvent e) {	
@@ -616,29 +996,78 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			keyPressed(e);
 		}
 	}
-	public void mouseMoved(MouseEvent e) { }
-	/*public void mouseMoved(MouseEvent e) { 
-		int x = e.getX();
-		int y = e.getY();
-		//if(mouseLock == false){
-		//if(mouseButton == MouseEvent.NOBUTTON){
-		roth +=  (x- mouseX) * rotateSpeed;
-		rotv +=  (y-mouseY) * rotateSpeed;
-		mouseX = x;
-		mouseY = y;
+	//public void mouseMoved(MouseEvent e) { }
+	public void mouseMoved(MouseEvent e) { 
+		/*if(this.mouseLock == false){
+		//	this.mouseLock=true;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = (int) screenSize.getWidth();
+		int height = (int) screenSize.getHeight();
+			int x = e.getX();
+			int y = e.getY();
+			if((x < (width/2) +20 && x >(width/2) -20) ){
+				//return;
+			}
+			else if(x < width/2){
+			roth -= 2f; //Smaller value will be smoother but slower
+			//if(roth < 360)
+				//roth += 360;
+			}
+			else if(x > width/2){
+				roth += 2f; //Smaller value will be smoother but slower
+				//if(roth > 360)
+					//roth -= 360;
+			}
+			if(y < (height/2)+20 && y > (height/2) -20){
+				//return;
+			}
+			else if(y > height/2){
+				rotv += 2f;
+				//if(rotv < -360)
+					//rotv += 360;
+			}
+			else if (y < height/2){
+				rotv -= 2f;
+				//if(rotv < -360)
+					//rotv += 360;
+			}
+			//if(mouseLock == false){
+			//if(mouseButton == MouseEvent.NOBUTTON){
+			//roth +=  (x- ((width/2)))/2 * rotateSpeed;
+			//rotv +=  (y- ((height/2)))/2 * rotateSpeed;
+			//mouseX = x;
+			//mouseY = y;
+			//canvas.removeMouseMotionListener(this);
+			robot.mouseMove(this.getLocationOnScreen().x+(width/2), this.getLocationOnScreen().y+(height/2));
+			//canvas.addMouseMotionListener(this);
+			//robot.mouseMove((width/2), (height/2));
 
-		
-		canvas.display();
-		//}
-	}*/
+			canvas.display();
+
+		//	this.mouseLock = false;
+		}
+		else{
+			this.mouseLock = false;
+		}
+		*/
+		}
+	///
 	
 	public void actionPerformed(ActionEvent e) { }
 	public void mouseClicked(MouseEvent e) { }
 	public void mouseEntered(MouseEvent e) { }
 	public void mouseExited(MouseEvent e) {	}	
 	public void mouseMove(MouseEvent e) { }
+
+	@Override
+	public void dispose(GLAutoDrawable arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
-	
+	public void changeLevel(){
+		
+	}
 }
 
 

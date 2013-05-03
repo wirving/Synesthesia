@@ -17,7 +17,7 @@ public class BasicObject {
     private float mat_specular[] = { .8f, .8f, .8f, 1 };
     
     // Default Diffuse Color
-    private float mat_diffuse[] = { 0f, 1f, 0f, 1 };
+    protected float mat_diffuse[] = { 0f, 1f, 0f, 1 };
     
     // Default Shininess Factor
     private float mat_shininess[] = { 128 };
@@ -121,7 +121,9 @@ public class BasicObject {
     	
     	// Checks to see if object can move
     	if(isDynamic){
-	    	if(Math.abs(playerX - this.xPos) < 4 && Math.abs(playerX - this.xPos) > 1.2 && Math.abs(playerZ - this.zPos) < 4 && Math.abs(playerZ - this.zPos) > 1.2){
+	    	//if(Math.abs(playerX - this.xPos) < 2 && Math.abs(playerZ - this.zPos) < 2 ){
+	    	if(Math.sqrt((Math.pow(Math.abs(Math.max(playerX,this.xPos) - Math.min(playerX,this.xPos)),2)+Math.pow(Math.abs(Math.max(playerZ, this.zPos) - Math.min(playerZ,  this.zPos)),2))) < 2 ){
+
 	    		if(this.yPos < 0){
 	    			this.yPos += .05;
 	    			

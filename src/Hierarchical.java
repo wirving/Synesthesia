@@ -14,10 +14,13 @@ import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+import javax.media.opengl.awt.GLCanvas;
 
-import com.sun.opengl.util.BufferUtil;
-import com.sun.opengl.util.FPSAnimator;
-import com.sun.opengl.util.GLUT;
+
+//import com.sun.opengl.util.BufferUtil;
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.util.FPSAnimator;
+//import com.sun.opengl.util.GLUT;
 
 import java.awt.Robot;
 import java.awt.AWTException; 
@@ -44,16 +47,16 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 			vertexBuffer.rewind();
 			normalBuffer.rewind();
 			faceBuffer.rewind();
-			gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-			gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+			gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 			
-			gl.glVertexPointer(3, GL.GL_FLOAT, 0, vertexBuffer);
-			gl.glNormalPointer(GL.GL_FLOAT, 0, normalBuffer);
+			gl.glVertexPointer(3, GL2.GL_FLOAT, 0, vertexBuffer);
+			gl.glNormalPointer(GL2.GL_FLOAT, 0, normalBuffer);
 			
-			gl.glDrawElements(GL.GL_TRIANGLES, num_faces*3, GL.GL_UNSIGNED_INT, faceBuffer);
+			gl.glDrawElements(GL2.GL_TRIANGLES, num_faces*3, GL2.GL_UNSIGNED_INT, faceBuffer);
 			
-			gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+			gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
 		}
 		
 		public objModel(String filename) {
@@ -170,9 +173,9 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 				input_norms.get(i).normalize();
 			}
 			
-			vertexBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-			normalBuffer = BufferUtil.newFloatBuffer(input_verts.size()*3);
-			faceBuffer = BufferUtil.newIntBuffer(input_faces.size());
+			vertexBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+			normalBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+			faceBuffer = Buffers.newDirectIntBuffer(input_faces.size());
 			
 			for (i = 0; i < input_verts.size(); i ++) {
 				vertexBuffer.put(input_verts.get(i).x);
@@ -309,7 +312,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	
 	/* GL, display, model transformation, and mouse control variables */
 	private final GLCanvas canvas;
-	private GL gl;
+	private GL2 gl;
 	private final GLU glu = new GLU();
 	private FPSAnimator animator;
 
@@ -360,14 +363,14 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	private int float_counter = 0;
 	private boolean up = true;
 	public void display(GLAutoDrawable drawable) {
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		
-		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, wireframe ? GL.GL_LINE : GL.GL_FILL);	
-		gl.glShadeModel(flatshade ? GL.GL_FLAT : GL.GL_SMOOTH);	
+		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, wireframe ? GL2.GL_LINE : GL2.GL_FILL);	
+		gl.glShadeModel(flatshade ? GL2.GL_FLAT : GL2.GL_SMOOTH);	
 		if (cullface)
-			gl.glEnable(GL.GL_CULL_FACE);
+			gl.glEnable(GL2.GL_CULL_FACE);
 		else
-			gl.glDisable(GL.GL_CULL_FACE);		
+			gl.glDisable(GL2.GL_CULL_FACE);		
 		
 		gl.glLoadIdentity();
 		
@@ -398,10 +401,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    float mat_specular[] = { .8f, .8f, .8f, 1 };
 	    float mat_diffuse[] = { 0f, 1f, 0f, 1 };
 	    float mat_shininess[] = { 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 		
 		floor.Draw();
 		gl.glPopMatrix(); //Floor
@@ -420,10 +423,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    mat_specular = new float[]{ .3f, .3f, .3f, 1 };
 	    mat_diffuse = new float[]{ .4f, .3f, .4f, 1 };
 	    mat_shininess = new float[]{ 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		rock.Draw();
 		gl.glPopMatrix(); //Rock
@@ -436,10 +439,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    mat_specular = new float[]{ .3f, .3f, .3f, 1 };
 	    mat_diffuse = new float[]{ .4f, .3f, .4f, 1 };
 	    mat_shininess = new float[]{ 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		rock.Draw();
 		gl.glPopMatrix(); //Rock
@@ -452,10 +455,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    mat_specular = new float[]{ .3f, .3f, .3f, 1 };
 	    mat_diffuse = new float[]{ .4f, .3f, .4f, 1 };
 	    mat_shininess = new float[]{ 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		rock.Draw();
 		gl.glPopMatrix(); //Rock
@@ -468,10 +471,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    mat_specular = new float[]{ .3f, .3f, .3f, 1 };
 	    mat_diffuse = new float[]{ .4f, .3f, .4f, 1 };
 	    mat_shininess = new float[]{ 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		rock.Draw();
 		gl.glPopMatrix(); //Rock
@@ -484,10 +487,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    mat_specular = new float[]{ .3f, .3f, .3f, 1 };
 	    mat_diffuse = new float[]{ .4f, .3f, .4f, 1 };
 	    mat_shininess = new float[]{ 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		rock.Draw();
 		gl.glPopMatrix(); //Rock
@@ -499,17 +502,17 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		
 	    mat_specular = new float[]{ .8f, .8f, .8f, 1 };
 	    mat_diffuse = new float[]{ 1f, 0f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		trunk.Draw();
 		
 		gl.glScalef(2f, .5f, 2f);
 		gl.glTranslatef(0f, 1f, 0f);
 	    mat_diffuse = new float[]{ 0f, 1f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 
 		rock.Draw();
 		gl.glPopMatrix(); //Tree
@@ -521,17 +524,17 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		
 	    mat_specular = new float[]{ .8f, .8f, .8f, 1 };
 	    mat_diffuse = new float[]{ 1f, 0f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		trunk.Draw();
 		
 		gl.glScalef(2f, .5f, 2f);
 		gl.glTranslatef(0f, 1f, 0f);
 	    mat_diffuse = new float[]{ 0f, 1f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 
 		rock.Draw();
 		gl.glPopMatrix(); //Tree
@@ -543,17 +546,17 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		
 	    mat_specular = new float[]{ .8f, .8f, .8f, 1 };
 	    mat_diffuse = new float[]{ 1f, 0f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		trunk.Draw();
 		
 		gl.glScalef(2f, .5f, 2f);
 		gl.glTranslatef(0f, 1f, 0f);
 	    mat_diffuse = new float[]{ 0f, 1f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 
 		rock.Draw();
 		gl.glPopMatrix(); //Tree
@@ -565,17 +568,17 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		
 	    mat_specular = new float[]{ .8f, .8f, .8f, 1 };
 	    mat_diffuse = new float[]{ 1f, 0f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		trunk.Draw();
 		
 		gl.glScalef(2f, .5f, 2f);
 		gl.glTranslatef(0f, 1f, 0f);
 	    mat_diffuse = new float[]{ 0f, 1f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 
 		rock.Draw();
 		gl.glPopMatrix(); //Tree
@@ -586,14 +589,14 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glTranslatef(8f, 0, -16f);
 		
 	    mat_diffuse = new float[]{ 1f, 0f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		trunk.Draw();
 		
 		gl.glScalef(2f, .5f, 2f);
 		gl.glTranslatef(0f, 1f, 0f);
 	    mat_diffuse = new float[]{ 0f, 1f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 
 		rock.Draw();
 		gl.glPopMatrix(); //Tree
@@ -604,7 +607,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glScalef(.5f,.5f,.5f);
 		
 	    mat_diffuse = new float[]{ (float)Math.random(), (float)Math.random(), (float)Math.random(), 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		female.Draw();
 		
@@ -615,7 +618,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glScalef(1,.10f,1);
 		
 	    mat_diffuse = new float[]{ 0f, .8f, .8f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		floor.Draw();
 		
@@ -634,7 +637,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glRotatef(180, 1, 0, 0);
 
 	    mat_diffuse = new float[]{ .3f, 1f, .1f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 		
 		cone.Draw();
 		
@@ -658,10 +661,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    mat_specular = new float[]{ .1f, .1f, 1f, 1 };
 	    mat_diffuse = new float[]{ 0f, .8f, .8f, 1 };
 	    mat_shininess = new float[]{ 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 	    
 		floor.Draw();
 		gl.glPopMatrix(); //Second Floor
@@ -676,10 +679,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    mat_specular = new float[]{ .8f, .8f, .8f, 1 };
 	    mat_diffuse = new float[]{ .9f, 0f, .9f, 1 };
 	    mat_shininess = new float[]{ 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 		
 		cone.Draw();
 		
@@ -709,7 +712,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glScalef(.25f,.25f,.25f);
 		
 	    mat_diffuse = new float[]{ 0f, 0f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		camera.Draw();
 		
@@ -721,7 +724,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glScalef(4f,4f,4f);
 		
 	    mat_diffuse = new float[]{ 0f, .2f, 1f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		male.Draw();
 		
@@ -733,7 +736,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glTranslatef(0,-.5f,0);
 		
 	    mat_diffuse = new float[]{ .2f, .8f, .1f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		ring.Draw();
 		
@@ -746,7 +749,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glTranslatef(1,1,0);
 		
 	    mat_diffuse = new float[]{ .8f, .1f, .8f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		bottle.Draw();
 		gl.glPopMatrix(); //Bottle
@@ -757,7 +760,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glScalef(.25f,.25f,.25f);
 		
 	    mat_diffuse = new float[]{ .8f, .4f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 		
 		pitcher.Draw();
 		gl.glPopMatrix(); //Pitcher
@@ -782,7 +785,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glScalef(.25f,.25f,.25f);
 		
 	    mat_diffuse = new float[]{ 0f, 0f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		camera.Draw();
 		
@@ -794,7 +797,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 
 		
 	    mat_diffuse = new float[]{ 0f, .2f, 1f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		male.Draw();
 		
@@ -804,7 +807,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glTranslatef(0,-.5f,0);
 		
 	    mat_diffuse = new float[]{ .9f, 0, 0, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		ring.Draw();
 		
@@ -815,7 +818,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glTranslatef(1,.75f,0);
 		
 	    mat_diffuse = new float[]{ .4f, .2f, .8f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		vase.Draw();
 		
@@ -824,7 +827,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glTranslatef(0,1,0);
 		
 	    mat_diffuse = new float[]{ .2f, .8f, .4f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		tulip.Draw();
 		gl.glPopMatrix();
@@ -844,7 +847,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		gl.glScalef(1.5f,.75f,1.5f);
 		
 	     mat_diffuse = new float[]{ .8f, .8f, 0f, 1 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
 	    
 		ceiling_fan.Draw();
 		
@@ -900,7 +903,7 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	}
 	
 	public void init(GLAutoDrawable drawable) {
-		gl = drawable.getGL();
+		gl = drawable.getGL().getGL2();
 
 		initViewParameters();
 		gl.glClearColor(.1f, .1f, .1f, 1f);
@@ -910,70 +913,70 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	    float light0_position[] = { 0, 0, 1, 0 };
 	    float light0_diffuse[] = { 1, 1, 1, 1 };
 	    float light0_specular[] = { 1, 1, 1, 1 };
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_POSITION, light0_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_DIFFUSE, light0_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT0, GL.GL_SPECULAR, light0_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_POSITION, light0_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light0_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_SPECULAR, light0_specular, 0);
 
 	    //red light
 	    float light1_position[] = { -.1f, .1f, 0, 0 };
 	    float light1_diffuse[] = { .6f, .05f, .05f, 1 };
 	    float light1_specular[] = { .6f, .05f, .05f, 1 };
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, light1_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_DIFFUSE, light1_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT1, GL.GL_SPECULAR, light1_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_POSITION, light1_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_DIFFUSE, light1_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_SPECULAR, light1_specular, 0);
 
 	    //blue light
 	    float light2_position[] = { .1f, .1f, 0, 0 };
 	    float light2_diffuse[] = { .05f, .05f, .6f, 1 };
 	    float light2_specular[] = { .05f, .05f, .6f, 1 };
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_POSITION, light2_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_DIFFUSE, light2_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT2, GL.GL_SPECULAR, light2_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_POSITION, light2_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_DIFFUSE, light2_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_SPECULAR, light2_specular, 0);
 
 	    
 	    float light3_position[] = { 1f, 3f, 1f, 0 };
 	    float light3_diffuse[] = { 5f, 5f, 5f, 1 };
 	    float light3_specular[] = { 5f, 5f, 5f, 1 };
-	    gl.glLightfv( GL.GL_LIGHT3, GL.GL_POSITION, light3_position, 0);
-	    gl.glLightfv( GL.GL_LIGHT3, GL.GL_DIFFUSE, light3_diffuse, 0);
-	    gl.glLightfv( GL.GL_LIGHT3, GL.GL_SPECULAR, light3_specular, 0);
+	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_POSITION, light3_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_DIFFUSE, light3_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_SPECULAR, light3_specular, 0);
 	    
 	    //material
 	    float mat_ambient[] = { 0, 0, 0, 1 };
 	    float mat_specular[] = { .8f, .8f, .8f, 1 };
 	    float mat_diffuse[] = { .4f, .4f, .4f, 1 };
 	    float mat_shininess[] = { 128 };
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_AMBIENT, mat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SPECULAR, mat_specular, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, mat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_FRONT, GL.GL_SHININESS, mat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_AMBIENT, mat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
 
 	    float bmat_ambient[] = { 0, 0, 0, 1 };
 	    float bmat_specular[] = { 0, .8f, .8f, 1 };
 	    float bmat_diffuse[] = { 0, .4f, .4f, 1 };
 	    float bmat_shininess[] = { 128 };
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_AMBIENT, bmat_ambient, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_SPECULAR, bmat_specular, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_DIFFUSE, bmat_diffuse, 0);
-	    gl.glMaterialfv( GL.GL_BACK, GL.GL_SHININESS, bmat_shininess, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_AMBIENT, bmat_ambient, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_SPECULAR, bmat_specular, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_DIFFUSE, bmat_diffuse, 0);
+	    gl.glMaterialfv( GL2.GL_BACK, GL2.GL_SHININESS, bmat_shininess, 0);
 
 	    float lmodel_ambient[] = { 0, 0, 0, 1 };
-	    gl.glLightModelfv( GL.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient, 0);
-	    gl.glLightModeli( GL.GL_LIGHT_MODEL_TWO_SIDE, 1 );
+	    gl.glLightModelfv( GL2.GL_LIGHT_MODEL_AMBIENT, lmodel_ambient, 0);
+	    gl.glLightModeli( GL2.GL_LIGHT_MODEL_TWO_SIDE, 1 );
 
-	    gl.glEnable( GL.GL_NORMALIZE );
-	    gl.glEnable( GL.GL_LIGHTING );
-	    gl.glEnable( GL.GL_LIGHT0 );
-	    gl.glEnable( GL.GL_LIGHT1 );
-	    gl.glEnable( GL.GL_LIGHT2 );
-	    gl.glEnable( GL.GL_LIGHT3);
+	    gl.glEnable( GL2.GL_NORMALIZE );
+	    gl.glEnable( GL2.GL_LIGHTING );
+	    gl.glEnable( GL2.GL_LIGHT0 );
+	    gl.glEnable( GL2.GL_LIGHT1 );
+	    gl.glEnable( GL2.GL_LIGHT2 );
+	    gl.glEnable( GL2.GL_LIGHT3);
 
-	    gl.glEnable(GL.GL_DEPTH_TEST);
-		gl.glDepthFunc(GL.GL_LESS);
-		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
-		gl.glCullFace(GL.GL_BACK);
-		gl.glEnable(GL.GL_CULL_FACE);
-		gl.glShadeModel(GL.GL_SMOOTH);		
+	    gl.glEnable(GL2.GL_DEPTH_TEST);
+		gl.glDepthFunc(GL2.GL_LESS);
+		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
+		gl.glCullFace(GL2.GL_BACK);
+		gl.glEnable(GL2.GL_CULL_FACE);
+		gl.glShadeModel(GL2.GL_SMOOTH);		
 	}
 	
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -981,10 +984,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 		winH = height;
 
 		gl.glViewport(0, 0, width, height);
-		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glMatrixMode(GL2.GL_PROJECTION);
 			gl.glLoadIdentity();
 			glu.gluPerspective(45.f, (float)width/(float)height, znear, zfar);
-		gl.glMatrixMode(GL.GL_MODELVIEW);
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 	
 	public void mousePressed(MouseEvent e) {	
@@ -1074,4 +1077,10 @@ class Hierarchical extends JFrame implements GLEventListener, KeyListener, Mouse
 	public void mouseEntered(MouseEvent e) { }
 	public void mouseExited(MouseEvent e) {	}	
 	public void mouseMove(MouseEvent e) { }
+
+	@Override
+	public void dispose(GLAutoDrawable arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

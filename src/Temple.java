@@ -145,4 +145,9 @@ public class Temple extends BasicLevel{
 	public int getStartZ(){
 		return 5;
 	}
+	
+	@Override
+	public String getLevelMusic(){
+		return "temptemple.wav";
+	}
 }
