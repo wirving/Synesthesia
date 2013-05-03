@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 
-public class Temple {
+public class Temple extends BasicLevel{
 	
 	private ArrayList<BasicObject> staticEntities;
 	private ArrayList<BasicObject> dynamicEntities;
@@ -166,5 +166,17 @@ public class Temple {
 	public void setStaticLights(){
 		
 	}
-
+	@Override
+	public int getStartX(){
+		return 1;
+	}
+	@Override
+	public int getStartZ(){
+		return 5;
+	}
+	
+	@Override
+	public String getLevelMusic(){
+		return "temptemple.wav";
+	}
 }

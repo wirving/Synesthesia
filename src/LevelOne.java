@@ -1,31 +1,61 @@
 import java.util.ArrayList;
 
 
-public class LevelOne {
+public class LevelOne extends BasicLevel {
 
-	private ArrayList<BasicObject> staticEntities;
+	private static final boolean F = false;
+	private static final boolean T = true;
 	private ArrayList<BasicObject> dynamicEntities;
 	private Boolean[][] collisionArray; 
 	
 	public LevelOne(){
 		staticEntities = new ArrayList<BasicObject>();
-		collisionArray = new Boolean[25][25];
-		for(int i = -1; i < 26; i++){
-			for(int j = -1; j < 26; j++){
+		interactiveEntities = new ArrayList<InteractiveObject>();
+		
+		//collisionArray = new Boolean[25][25];
+		Boolean[][] tempArray = { 
+				{T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T},
+				{T, F, F, F, F, T, F, F, F, T, F, T, F, F, F, F, F, F, F, F, F, T}, //Start Row
+				{T, T, F, T, F, T, F, T, F, F, F, F, F, T, F, T, T, T, T, T, F, T},
+				{T, T, F, T, F, F, F, T, T, F, F, F, T, F, F, T, F, F, F, F, F, T},
+				{T, F, F, F, T, T, T, F, F, T, F, T, F, F, T, T, F, T, T, T, T, T},
+				{T, F, T, F, T, F, F, F, F, F, T, F, F, T, F, F, F, F, F, F, F, T},
+				{T, F, T, F, F, T, T, T, T, F, T, T, F, F, F, T, F, T, T, T, F, T},
+				{T, F, T, T, T, T, F, F, F, F, T, T, F, T, T, F, F, T, F, T, F, T},
+				{T, F, F, F, F, F, F, T, T, T, F, F, F, F, F, F, T, T, F, F, F, T},
+				{T, T, T, T, F, F, T, F, F, F, T, F, T, F, F, T, F, F, T, T, T, T},
+				{T, F, F, F, F, T, T, F, T, F, F, F, T, F, F, F, F, F, F, F, F, T},
+				{T, F, T, F, T, F, T, F, F, T, T, T, F, F, F, T, T, T, F, F, F, T},
+				{T, F, F, F, F, F, F, T, F, T, F, F, F, T, F, F, F, F, T, F, F, T},
+				{T, F, F, T, F, T, F, T, F, T, F, F, T, F, T, F, F, F, F, T, F, T},
+				{T, T, T, F, F, T, F, T, F, F, F, T, F, F, F, T, F, T, F, F, F, T},
+				{T, F, F, F, T, T, F, T, F, F, T, F, F, T, F, F, F, T, F, T, T, T},
+				{T, T, F, T, F, T, F, F, T, T, T, F, T, F, T, T, F, F, F, F, F, T},
+				{T, F, F, F, F, T, F, F, F, F, F, F, T, F, F, F, T, T, F, F, F, T},
+				{T, F, T, F, F, F, T, F, T, T, T, T, F, F, F, F, F, F, T, T, F, T},
+				{T, F, T, T, T, T, T, F, T, F, F, F, F, F, F, F, F, F, F, F, T, T},
+				{T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, T},
+				{T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T},
+				
+				};
+		collisionArray = tempArray;
+		for(int i = 0; i < 22; i++){
+			for(int j = 0; j < 22; j++){
 				float y = -1;
-				if(i == -1 || i == 25 || j == -1 || j == 25){
+				if(i == 0 || i == 21 || j == 0 || j == 21){
 					y = 0;
 				}
-				BasicObject newObj = new BasicObject(i,y,j,1,1,1);
-				BasicObject ceiling = new BasicObject(i,1,j,1,1,1);
-				
+				Cube newObj = new Cube(i,y,j,1,1,1);
+				Cube ceiling = new Cube(i,1,j,1,1,1);
 				newObj.setObject("cube");
 				ceiling.setObject("cube");
 				
-				if(i != -1 && i != 25 && j != -1 && j != 25){
-					newObj.setDynamic(true);
+				if(i == 0 || i == 21 || j == 0 || j == 21){
+					newObj.setDynamic(F);
 				}
-				
+				else if(collisionArray[i][j] == T){
+					newObj.setDynamic(T);
+				}
 				switch(i%6){
 				case 0:
 					newObj.setDiffuse(new float[]{1,0,0,1});
@@ -61,10 +91,23 @@ public class LevelOne {
 				staticEntities.add(ceiling);
 			}
 		}
-
+		InteractiveObject newEndObj = new InteractiveObject(20,0,20,1,1,1);
+		newEndObj.setObject("bottle");
+		interactiveEntities.add(newEndObj);
 	}
 	
 	public ArrayList<BasicObject> getStaticEntities(){
 		return staticEntities;
+	}
+	
+	public int getStartX(){
+		return 1;
+	}
+	public int getStartZ(){
+		return 10;
+	}
+	@Override
+	public Boolean[][] getCollisionArray(){
+		return collisionArray;
 	}
 }
