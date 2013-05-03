@@ -45,8 +45,14 @@ public class LevelOne extends BasicLevel {
 				if(i == 0 || i == 21 || j == 0 || j == 21){
 					y = 0;
 				}
+<<<<<<< HEAD
+				BasicObject newObj = new BasicObject(i,y,j,1,1,1);
+				BasicObject ceiling = new BasicObject(i,1,j,1,1,1);
+				
+=======
 				Cube newObj = new Cube(i,y,j,1,1,1);
 				Cube ceiling = new Cube(i,1,j,1,1,1);
+>>>>>>> Kyle
 				newObj.setObject("cube");
 				ceiling.setObject("cube");
 				
@@ -93,7 +99,6 @@ public class LevelOne extends BasicLevel {
 		}
 		InteractiveObject newEndObj = new InteractiveObject(20,0,20,1,1,1);
 		newEndObj.setObject("bottle");
-		newEndObj.setFunction(InteractiveObject.Function.NEXT_LEVEL);
 		interactiveEntities.add(newEndObj);
 	}
 	

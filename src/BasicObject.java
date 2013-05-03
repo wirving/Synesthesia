@@ -1,14 +1,42 @@
+import java.util.ArrayList;
+
 
 public class BasicObject {
+	
+	ArrayList<String> animationCycle = new ArrayList<String>();
+	boolean goUp = true;
+	int whichFrame = 0;
+	
+	public void animateObject(){
+	if (whichFrame == animationCycle.size()-1){
+		goUp = false;
+	}
+	else if (whichFrame == 0){
+		goUp = true;
+	}
+	
+	if (goUp == true){
+		whichFrame ++;
+	}
+	else {
+		whichFrame --;
+	}
+	
+	this.setObject(animationCycle.get(whichFrame));
+	}
+	
+	public void setAnimation(String nextObjName){
+		animationCycle.add(nextObjName);
+	}
 
 	// X,Y,Z Position of Object
-	private float xPos = 0, yPos = 0, zPos = 0;
+	protected float xPos = 0, yPos = 0, zPos = 0;
 	
 	// X,Y,Z Scale of Object
 	private float xScale = 1, yScale = 1, zScale = 1;
 	
 	// X,Y,Z Rotation of Object
-	private float xRot = 0, yRot = 0, zRot = 0;
+	protected float xRot = 0, yRot = 0, zRot = 0;
 	
 	// Default Ambiant Color
 	private float mat_ambient[] = { 0, 1f, 0, 1 };

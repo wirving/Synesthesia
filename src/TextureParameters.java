@@ -2,7 +2,7 @@
 public class TextureParameters {
 	
 	public enum texCoordGenMode{
-		PLANE, SPHERE
+		PLANE, SPHERE, SPHERE_MAP
 	}
 	
 	//Texture parameter info, all in one place!

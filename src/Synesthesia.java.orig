@@ -21,6 +21,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 //import javax.media.opengl.GL;
+<<<<<<< HEAD
+import javax.media.opengl.GL;
+=======
+>>>>>>> Kyle
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.awt.GLCanvas;
@@ -37,21 +41,20 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import com.jogamp.common.nio.Buffers;
+<<<<<<< HEAD
+import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
+=======
 import com.jogamp.newt.Window;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureIO;
+>>>>>>> Kyle
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
-	/* This defines the objModel class, which takes care
-	 * of loading a triangular mesh from an obj file,
-	 * estimating per vertex average normal,
-	 * and displaying the mesh.
-	 */
-	public class objModel {
+	class objModel {
 		public FloatBuffer vertexBuffer;
 		public IntBuffer faceBuffer;
 		public FloatBuffer normalBuffer;
@@ -64,6 +67,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			vertexBuffer.rewind();
 			normalBuffer.rewind();
 			faceBuffer.rewind();
+<<<<<<< HEAD
 			texCoordBuffer.rewind();
 			
 			float[] tiling = params.getTilingCoefficients();
@@ -78,8 +82,8 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				
 					if (params.getTexGenMode() == TextureParameters.texCoordGenMode.PLANE)
 					{
-						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
-						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+						gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+						gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 				
 						//Wrapping
 						gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
@@ -93,17 +97,10 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 						gl.glTexGenfv(GL2.GL_T, GL2.GL_OBJECT_PLANE, zPlane, 0);
 					}
 					
-					else if (params.getTexGenMode() == TextureParameters.texCoordGenMode.SPHERE) //Sphere
+					else //Sphere
 					{
 						gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 						gl.glTexCoordPointer(2, GL2.GL_FLOAT, 0, texCoordBuffer);
-					}
-					
-					else{ //Sphere map
-						gl.glEnable(GL2.GL_TEXTURE_GEN_S);
-						gl.glEnable(GL2.GL_TEXTURE_GEN_T);
-						gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_SPHERE_MAP);
-						gl.glTexGeni(GL2.GL_T, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_SPHERE_MAP);
 					}
 			}
 			
@@ -129,6 +126,18 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				
 			tex.disable(gl);
 			}
+=======
+			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+			gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+			
+			gl.glVertexPointer(3, GL2.GL_FLOAT, 0, vertexBuffer);
+			gl.glNormalPointer(GL2.GL_FLOAT, 0, normalBuffer);
+			
+			gl.glDrawElements(GL2.GL_TRIANGLES, num_faces*3, GL2.GL_UNSIGNED_INT, faceBuffer);
+			
+			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+			gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+>>>>>>> Kyle
 		}
 		
 		public objModel(String filename) {
@@ -245,6 +254,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				input_norms.get(i).normalize();
 			}
 			
+<<<<<<< HEAD
 			//Calculate sphere texture coordinates
 			ArrayList<Point2f> tex_coords = new ArrayList<Point2f>();
 			for (int j = 0; j < input_norms.size(); j++){
@@ -258,6 +268,11 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			normalBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
 			faceBuffer = Buffers.newDirectIntBuffer(input_faces.size());
 			texCoordBuffer = Buffers.newDirectFloatBuffer(input_norms.size()*2);
+=======
+			vertexBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+			normalBuffer = Buffers.newDirectFloatBuffer(input_verts.size()*3);
+			faceBuffer = Buffers.newDirectIntBuffer(input_faces.size());
+>>>>>>> Kyle
 			
 			for (i = 0; i < input_verts.size(); i ++) {
 				vertexBuffer.put(input_verts.get(i).x);
@@ -516,9 +531,14 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		   }
 			break;
 			
+<<<<<<< HEAD
+		case 'a':
+		case 'A':
+=======
 		//case (int) 'a':
 		//case (int) 'A':
 		case KeyEvent.VK_LEFT:
+>>>>>>> Kyle
 			roth -= 2f; //Smaller value will be smoother but slower
 			if(roth < 360)
 				roth += 360;
@@ -552,19 +572,9 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			break;
 		case KeyEvent.VK_SPACE:
 			for(InteractiveObject currentObject: interactiveObjects){
-				InteractiveObject.Function function = currentObject.getFunction();
-				
-				switch (function){
-				case NEXT_LEVEL:
-					if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < 2 ){
-			    		nextLevel();
-			    	}
-					break;
-				case LEVEL_EVENT:
-					//Do something in level
-				}
-				
-		    	
+		    	if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < 2 ){
+		    		nextLevel();
+		    	}
 			}
 			break;
 		case (int) 'P':
@@ -583,7 +593,10 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	/* GL, display, model transformation, and mouse control variables */
 	private final GLCanvas canvas;
 	private GL2 gl;
+<<<<<<< HEAD
+=======
 	private GLUT glut = new GLUT();
+>>>>>>> Kyle
 	private final GLU glu = new GLU();
 	private Robot robot;
 	private boolean mouseLock=false;
@@ -605,14 +618,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	
 	private Set<Integer> pressed = new ConcurrentSkipListSet<Integer>();
 	
-	//For mouse movement
-	 int dmx = 0; int dmy = 0;
-	 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int width = (int) screenSize.getWidth();
-		int height = (int) screenSize.getHeight();
 	
-			int screenXDiv2=width>>1;
-	          int screenYDiv2=height>>1;
 	
 	
 	/* === YOUR WORK HERE === */
@@ -622,12 +628,22 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 
 	private int nextLevel =0;
 	private LevelOne levelOne = new LevelOne();
+<<<<<<< HEAD
+	//private LevelTwo levelTwo = new LevelTwo();
+	private Temple temple = new Temple();
+	
+	//For temple set light0 position to {0, 5, 1, 0}
+	private ArrayList<BasicObject> objects = temple.getStaticEntities();
+	//private ArrayList<BasicObject> objects = levelTwo.getStaticEntities();
+	
+	private boolean canMove = true;
+	HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
+	HashMap<String, Texture> textureMap = new HashMap<String, Texture>();
+	
+=======
 	private Transition1 transition1 = new Transition1();
 	private LevelTwo levelTwo = new LevelTwo();
 	private Temple temple = new Temple();
-	private Outside outside = new Outside();
-	
-	private BasicLevel currentLevel;
 	
 	Clip clip;
 	File soundFile;
@@ -641,7 +657,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	private boolean collisionDetect = true;
 	HashMap<String, objModel> objectMap = new HashMap<String, objModel>();
 	private ArrayList<BasicLevel> levelList = new ArrayList<BasicLevel>();
-	HashMap<String, Texture> textureMap = new HashMap<String, Texture>();
+>>>>>>> Kyle
 	
 	private float example_rotateT = 0.f;
 	/* Here you should give a conservative estimate of the scene's bounding box
@@ -662,36 +678,25 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("cube", new objModel("floorobj.obj"));
 		objectMap.put("plane", new objModel("plane.obj"));
 		objectMap.put("cylinder", new objModel("trunk.obj"));
+<<<<<<< HEAD
 		objectMap.put("statue", new objModel("statue_sword_static.obj"));
 		objectMap.put("plant", new objModel("plant.obj"));
-		objectMap.put("bottle", new objModel("bottle.obj"));
-		objectMap.put("tree_aspen",  new objModel("tree_aspen.obj"));
-		objectMap.put("sphere", new objModel("small_sphere.obj"));
-		objectMap.put("statue1", new objModel("statue_step_1.obj"));
-		objectMap.put("statue2", new objModel("statue_step_2.obj"));
-		objectMap.put("statue3", new objModel("statue_step_3.obj"));
-		objectMap.put("statue4", new objModel("statue_step_4.obj"));
-
-
-
 		
 	}
 	
-public void makeTextureMap(){
+	public void makeTextureMap(){
 		
 		ArrayList<String> filenames = new ArrayList<String>();
 		filenames.add("floor.png");
 		filenames.add("marble_tile2.jpg");
 		filenames.add("cool_tiles.png");
 		filenames.add("tiles.jpg");
-		filenames.add("sky_map.png");
 		
 		ArrayList<String> tex_names = new ArrayList<String>();
 		tex_names.add("floor");
 		tex_names.add("marble");
 		tex_names.add("tiles");
 		tex_names.add("tiles2");
-		tex_names.add("sky");
 		
 		for (int i = 0; i < tex_names.size(); i++){
 		Texture tex = null;
@@ -711,19 +716,24 @@ public void makeTextureMap(){
 		
 	}
 	
+=======
+		objectMap.put("statue", new objModel("female.obj"));
+		objectMap.put("plant", new objModel("plant.obj"));
+		objectMap.put("bottle", new objModel("bottle.obj"));
+		objectMap.put("tree_aspen",  new objModel("tree_aspen.obj"));
+		
+	}
+	
 	public void makeLevelList(){
 		levelList.add(levelOne);
 		levelList.add(transition1);
 		levelList.add(levelTwo);
 		levelList.add(temple);
-		levelList.add(outside);
-		currentLevel = levelList.get(0);
 		nextLevel();
 	}
 	
 	public void nextLevel(){
 		BasicLevel level = levelList.get(nextLevel);
-		currentLevel = level;
 		objects = level.getStaticEntities();
 		interactiveObjects = level.getInteractiveEntities();
 		collisionArray = level.getCollisionArray();
@@ -731,13 +741,6 @@ public void makeTextureMap(){
 		zpos = level.getStartZ();
 		changeMusic(level.getLevelMusic());
 		nextLevel = (nextLevel+1)%levelList.size();
-	}
-	
-	public void updateLevel(){
-		objects = currentLevel.getStaticEntities();
-		interactiveObjects = currentLevel.getInteractiveEntities();
-		collisionArray = currentLevel.getCollisionArray();
-		changeMusic(currentLevel.getLevelMusic());
 	}
 	
 	public void changeMusic(String fileName){
@@ -762,9 +765,8 @@ public void makeTextureMap(){
 			e.printStackTrace();
 		}
 	}
+>>>>>>> Kyle
 	public void display(GLAutoDrawable drawable) {
-		
-		System.out.println("Player X: " + xpos + " Player Z: "+ zpos);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		
 		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, wireframe ? GL2.GL_LINE : GL2.GL_FILL);	
@@ -777,20 +779,25 @@ public void makeTextureMap(){
 		gl.glLoadIdentity();
 		
 		/* this is the transformation of the entire scene */
+		
+
+		
 		gl.glTranslatef(centerx, centery, centerz);
+		
 		gl.glRotatef(rotv, 1.0f, 0, 0);
-
+		
 		gl.glRotatef(roth, 0, 1.0f, 0);
-		gl.glTranslatef(-centerx, -centery, -centerz);	
+		gl.glTranslatef(-centerx, -centery, -centerz);
+		
 
+		
 		gl.glTranslatef(-xpos, -ypos, -zpos);
-
+		
 		/* === YOUR WORK HERE === */
 		
 		/* Below is an example of a rotating bunny
 		 * It rotates the bunny with example_rotateT degrees around the bunny's gravity center  
 		 */
-		
 		
 		gl.glPushMatrix();
 		
@@ -802,152 +809,146 @@ public void makeTextureMap(){
 		cube.Draw();
 		gl.glPopMatrix();
 		*/
-		
-		
-		//Check triggers
-		
-		
-		
 		if(nextLevel == 2){
-			gl.glPushMatrix();
-				gl.glTranslatef(15, 2, -2);
-				gl.glScalef(.01f, .005f, .005f);
-				gl.glRotatef(-90, 0, 2f, 0);
-				float[] tempdiffuse = { 1f, 1f, 0f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, new float[]{.5f,.5f,.5f,0}, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "A WALK IN THE DARK");
-		    	//gl.glTranslatef(-10, 0, 2);
-			gl.glPopMatrix();
-			
-			gl.glPushMatrix();
-				gl.glTranslatef(30, -.5f, -3);
-				gl.glScalef(.005f, .005f, .005f);
-				gl.glRotatef(225, 0, 1f, 0);
-				tempdiffuse = new float[]{ 0f, 1f, 1f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "TIME TO REFLECT ON YOUR CURRENT SITUATION");
-		    	//gl.glTranslatef(-30, 0, -4);
-		    gl.glPopMatrix();
-		    
-			gl.glPushMatrix();
-				gl.glTranslatef(35, 1, -4);
-				gl.glScalef(.005f, .005f, .005f);
-				gl.glRotatef(-45, 0, 1, 0);
-				tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "SURE IS EMPTY HERE, ISN'T IT?");
-		    	//gl.glTranslatef(-20, 0, -4);
-	    	gl.glPopMatrix();
+		gl.glPushMatrix();
+			gl.glTranslatef(15, 2, -2);
+			gl.glScalef(.01f, .005f, .005f);
+			gl.glRotatef(-90, 0, 2f, 0);
+			float[] tempdiffuse = { 1f, 1f, 0f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, new float[]{.5f,.5f,.5f,0}, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "A WALK IN THE DARK");
+	    	//gl.glTranslatef(-10, 0, 2);
+		gl.glPopMatrix();
+		
+		gl.glPushMatrix();
+			gl.glTranslatef(30, -.5f, -3);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(225, 0, 1f, 0);
+			tempdiffuse = new float[]{ 0f, 1f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "TIME TO REFLECT ON YOUR CURRENT SITUATION");
+	    	//gl.glTranslatef(-30, 0, -4);
+	    gl.glPopMatrix();
 	    
-			gl.glPushMatrix();
-				gl.glTranslatef(55, 1.5f, 4);
-				gl.glScalef(.005f, .005f, .005f);
-				gl.glRotatef(225, 0, 1f, 0);
-				tempdiffuse = new float[]{ 1f, 0f, 0f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "THERE'S SOMETHING BEYOND THE ROAD");
-	    	gl.glPopMatrix();
-		
-			gl.glPushMatrix();
-				gl.glTranslatef(58, 0, -12);
-				gl.glScalef(.005f, .005f, .005f);
-				gl.glRotatef(-45, 0, 1f, 0);
-				tempdiffuse = new float[]{ 0f, 0f, 1f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-			    glut.glutStrokeString(glut.STROKE_ROMAN, "DEEP IN THE DARK, CAN YOU SEE IT?");
-	    	gl.glPopMatrix();
-	    	
-			gl.glPushMatrix();
-				gl.glTranslatef(80, -.05f, 4);
-				gl.glScalef(.005f, .005f, .005f);
-				gl.glRotatef(225, 0, 1f, 0);
-				tempdiffuse = new float[]{ 0f, 1f, 0f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "MIGHT AS WELL GO, THERE'S NOTHING ELSE");
-	    	gl.glPopMatrix();
-	    	
-			gl.glPushMatrix();
-				gl.glTranslatef(85, 0, -8);
-				gl.glScalef(.005f, .005f, .005f);
-				gl.glRotatef(-45, 0, 1f, 0);
-				tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-			    glut.glutStrokeString(glut.STROKE_ROMAN, "UNLESS... YOU'D LIKE TO STAY...");
-	    	gl.glPopMatrix();
-		
-			gl.glPushMatrix();
-				gl.glTranslatef(100, 1.5f, -3f);
-				gl.glScalef(.005f, .005f, .005f);
-				gl.glRotatef(90, 0, -1f, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "AND WRITE WORDS IN THE SKY");
-		    	//gl.glTranslatef(-20, 0, -4);
-	    	gl.glPopMatrix();
-	    	
-			gl.glPushMatrix();
-				gl.glTranslatef(100, -1f, 2f);
-				gl.glScalef(.01f, .01f, .01f);
-				gl.glRotatef(-90, 1f, 0f, 0f);
-				tempdiffuse = new float[]{ .8f, 0f, 1f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "LET MY WORDS GUIDE YOU TO WHERE YOU THINK YOU NEED TO GO");
-		    	//gl.glTranslatef(-20, 0, -4);
-	    	gl.glPopMatrix();
+		gl.glPushMatrix();
+			gl.glTranslatef(35, 1, -4);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(-45, 0, 1, 0);
+			tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "SURE IS EMPTY HERE, ISN'T IT?");
+	    	//gl.glTranslatef(-20, 0, -4);
+    	gl.glPopMatrix();
+    
+		gl.glPushMatrix();
+			gl.glTranslatef(55, 1.5f, 4);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(225, 0, 1f, 0);
+			tempdiffuse = new float[]{ 1f, 0f, 0f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "THERE'S SOMETHING BEYOND THE ROAD");
+    	gl.glPopMatrix();
+	
+		gl.glPushMatrix();
+			gl.glTranslatef(58, 0, -12);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(-45, 0, 1f, 0);
+			tempdiffuse = new float[]{ 0f, 0f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    glut.glutStrokeString(glut.STROKE_ROMAN, "DEEP IN THE DARK, CAN YOU SEE IT?");
+    	gl.glPopMatrix();
+    	
+		gl.glPushMatrix();
+			gl.glTranslatef(80, -.05f, 4);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(225, 0, 1f, 0);
+			tempdiffuse = new float[]{ 0f, 1f, 0f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "MIGHT AS WELL GO, THERE'S NOTHING ELSE");
+    	gl.glPopMatrix();
+    	
+		gl.glPushMatrix();
+			gl.glTranslatef(85, 0, -8);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(-45, 0, 1f, 0);
+			tempdiffuse = new float[]{ 1f, 1f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+		    glut.glutStrokeString(glut.STROKE_ROMAN, "UNLESS... YOU'D LIKE TO STAY...");
+    	gl.glPopMatrix();
+	
+		gl.glPushMatrix();
+			gl.glTranslatef(100, 1.5f, -3f);
+			gl.glScalef(.005f, .005f, .005f);
+			gl.glRotatef(90, 0, -1f, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "AND WRITE WORDS IN THE SKY");
+	    	//gl.glTranslatef(-20, 0, -4);
+    	gl.glPopMatrix();
+    	
+		gl.glPushMatrix();
+			gl.glTranslatef(100, -1f, 2f);
+			gl.glScalef(.01f, .01f, .01f);
+			gl.glRotatef(-90, 1f, 0f, 0f);
+			tempdiffuse = new float[]{ .8f, 0f, 1f, 0f};
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
+	    	glut.glutStrokeString(glut.STROKE_ROMAN, "LET MY WORDS GUIDE YOU TO WHERE YOU THINK YOU NEED TO GO");
+	    	//gl.glTranslatef(-20, 0, -4);
+    	gl.glPopMatrix();
+	
 		}
 		for(final BasicObject currentObject : objects){
 			
 			gl.glPushMatrix();
 			currentObject.Move(xpos,ypos,zpos);
 			
-			gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
+		    gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
 		    gl.glRotatef(currentObject.getYRot(), 0f, 1f, 0f);
 		    gl.glRotatef(currentObject.getZRot(), 0f, 0f, 1f);
-			
+		    
 			gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
 		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getDiffuseColor(), 0);
 		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
 		    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
 		    
-		 
+<<<<<<< HEAD
+		  //  if (currentObject.getTexParams().isTextured() == false){
+		   // objectMap.get(currentObject.getObject()).Draw(null, currentObject.getTexParams());
+		    //}
+		    
+		   // else{
 		    	Texture tex = textureMap.get(currentObject.getTexParams().getTextureName());
 		    	objectMap.get(currentObject.getObject()).Draw(tex, currentObject.getTexParams());
-	
+		    //}
 		    
-			//cube.Draw();
+=======
+		    objectMap.get(currentObject.getObject()).Draw();
+			//cube.Draw();		
+
 			gl.glPopMatrix();
 		}
-
-		if(interactiveObjects != null){
+		if(interactiveObjects != null)
 		for(final InteractiveObject currentObject : interactiveObjects){
 			
 			gl.glPushMatrix();
 			currentObject.Move(xpos,ypos,zpos);
-			gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
 			
 		    gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
 		    gl.glRotatef(currentObject.getYRot(), 0f, 1f, 0f);
 		    gl.glRotatef(currentObject.getZRot(), 0f, 0f, 1f);
 		    
-			if (currentObject.getFunction() == InteractiveObject.Function.NEXT_LEVEL){
-		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getRandomDiffuseColor(), 0);
-			}
-		
-			else{
-			gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getDiffuseColor(), 0);
-			}
-			
+			gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
+		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getDiffuseColor(), 0);
 		    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
 		    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
 		    
-		    Texture tex = textureMap.get(currentObject.getTexParams().getTextureName());
-	    	objectMap.get(currentObject.getObject()).Draw(tex, currentObject.getTexParams());
+		    objectMap.get(currentObject.getObject()).Draw();
+>>>>>>> Kyle
 			//cube.Draw();
 			gl.glPopMatrix();
-			}
 		}
 		
 		gl.glPopMatrix(); //End Drawing
-		
+	
 		/* increment example_rotateT */
 		if (animator.isAnimating())
 			example_rotateT += 1.0f * animation_speed;
@@ -996,12 +997,18 @@ public void makeTextureMap(){
 		initViewParameters();
 		
 		makeObjectMap();
+<<<<<<< HEAD
 		makeTextureMap();
+=======
 		makeLevelList();
+>>>>>>> Kyle
 		
 		gl.glClearColor(.1f, .1f, .1f, 1f);
 		gl.glClearDepth(1.0f);
 
+<<<<<<< HEAD
+		
+=======
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
@@ -1009,6 +1016,7 @@ public void makeTextureMap(){
 			e.printStackTrace();
 		}
 
+>>>>>>> Kyle
 		//Eventually set lights based on scene description
 	    float light0_position[] = { 0, 5, 1, 0 };
 	    float light0_diffuse[] = { 1, 1, 1, 1 };
@@ -1038,6 +1046,10 @@ public void makeTextureMap(){
 	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_POSITION, light3_position, 0);
 	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_DIFFUSE, light3_diffuse, 0);
 	    gl.glLightfv( GL2.GL_LIGHT3, GL2.GL_SPECULAR, light3_specular, 0);
+<<<<<<< HEAD
+	    
+=======
+>>>>>>> Kyle
 	    
 	    //material
 	    float mat_ambient[] = { 0, 0, 0, 1 };
@@ -1074,7 +1086,11 @@ public void makeTextureMap(){
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 		gl.glCullFace(GL2.GL_BACK);
 		gl.glEnable(GL2.GL_CULL_FACE);
+<<<<<<< HEAD
+		gl.glShadeModel(GL2.GL_SMOOTH);		
+=======
 		gl.glShadeModel(GL2.GL_SMOOTH);	
+>>>>>>> Kyle
 	}
 	
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -1163,11 +1179,26 @@ public void makeTextureMap(){
 	}
 	//public void mouseMoved(MouseEvent e) { }
 	public void mouseMoved(MouseEvent e) { 
-		if(this.mouseLock == false){
-		//	this.mouseLock=true;
+<<<<<<< HEAD
+		int x = e.getX();
+		int y = e.getY();
+		//if(mouseLock == false){
+		//if(mouseButton == MouseEvent.NOBUTTON){
+		roth +=  (x- mouseX) * rotateSpeed;
+		rotv +=  (y-mouseY) * rotateSpeed;
+		mouseX = x;
+		mouseY = y;
+
 		
-	          
-	          /*
+		canvas.display();
+=======
+		/*if(this.mouseLock == false){
+		//	this.mouseLock=true;
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = (int) screenSize.getWidth();
+		int height = (int) screenSize.getHeight();
+			int x = e.getX();
+			int y = e.getY();
 			if((x < (width/2) +20 && x >(width/2) -20) ){
 				//return;
 			}
@@ -1213,29 +1244,8 @@ public void makeTextureMap(){
 			this.mouseLock = false;
 		}
 		*/
-	          
-	         int mx=e.getXOnScreen();
-	          int my=e.getYOnScreen();
-	          if(mx!=screenXDiv2 || my!=screenYDiv2)
-	          {
-	             if(mx!=screenXDiv2)
-	             {
-	                dmx+=mx-screenXDiv2;
-	             }
-	             if(my!=screenYDiv2)
-	             {
-	                dmy+=my-screenYDiv2;   
-	             }
-	             robot.mouseMove(screenXDiv2, screenYDiv2);
-	             
-	             roth = (float) (dmx *.1);
-		         rotv = (float)(dmy *.1);
-	          }
-	          
-	          
-	          
+>>>>>>> Kyle
 		}
-	}
 	///
 	
 	public void actionPerformed(ActionEvent e) { }
@@ -1250,7 +1260,9 @@ public void makeTextureMap(){
 		
 	}
 	
-	
+	public void changeLevel(){
+		
+	}
 }
 
 

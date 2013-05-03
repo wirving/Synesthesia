@@ -1,59 +1,33 @@
 import java.util.ArrayList;
 
 
+<<<<<<< HEAD
+public class Temple {
+=======
 public class Temple extends BasicLevel{
+>>>>>>> Kyle
 	
 	private ArrayList<BasicObject> staticEntities;
 	private ArrayList<BasicObject> dynamicEntities;
-	private ArrayList<InteractiveObject> interactiveEntities;
 	private Boolean[][] collisionArray; 
 	private ArrayList<Light> lights;
-	BasicObject statue;
-	float[] column_color = new float[]{.95f, .9f, .9f, 1f};
-	float[] wall_color = new float[]{.65f, .6f, .6f, 1f}; //.6 .4 .3
-	float[] zero_array = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
-	
-	public boolean levelUpdated = false;
 	
 	public Temple(){
 		
 		setStaticLights();
-		hasTrigger = true;
-		eventTriggered = false;
 		staticEntities = new ArrayList<BasicObject>();
-		collisionArray = new Boolean[84][11];
-		interactiveEntities = new ArrayList<InteractiveObject>();
-		
-		for(int x = 0; x < 84; x++){
-			for (int z = 0; z < 11; z++){
-					
-					if (z == 0 || z == 10){ //L, R walls
-					collisionArray[x][z] = true;
-					}
-					else if (x == 0 || x == 83){ //Front, back walls
-						collisionArray[x][z] = true;
-					}
-					
-					else if (x % 9 == 0 && (z == 0 || z == 10) ) //Columns
-						collisionArray[x][z] = true;
-					
-					else if((x == 79 || x == 80) && (z == 4 || z == 5 || z == 6)){ //Statue
-						collisionArray[x][z] = true;
-					}
-					
-					
-					else{
-						collisionArray[x][z] = false;
-					}
-				
-			}
-		}
-		
-	
+<<<<<<< HEAD
+		collisionArray = new Boolean[25][25];
 		
 		float[] column_color = new float[]{.95f, .9f, .9f, 1f};
 		float[] wall_color = new float[]{.65f, .6f, .6f, 1f}; //.6 .4 .3
 		float[] zero_array = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
+=======
+		//collisionArray = new Boolean[25][25];
+		
+		float[] column_color = new float[]{.8f, .6f, .5f, 1f};
+		float[] wall_color = new float[]{.6f, .4f, .3f, 1f};
+>>>>>>> Kyle
 		
 		//Floor & ceiling
 		BasicObject floor = new BasicObject(40, -1f, 5, 100, 2, 10);
@@ -61,12 +35,16 @@ public class Temple extends BasicLevel{
 		
 		floor.setDiffuse(wall_color);
 		ceiling.setDiffuse(wall_color);
+<<<<<<< HEAD
 		floor.setSpecular(zero_array);
 		ceiling.setSpecular(zero_array);
+=======
+>>>>>>> Kyle
 		
 		floor.setObject("plane");
 		ceiling.setObject("plane");
 		
+<<<<<<< HEAD
 		TextureParameters floor_tex = new TextureParameters();
 		floor_tex.setTextured(true);
 		floor_tex.setTextureName("floor");
@@ -74,6 +52,8 @@ public class Temple extends BasicLevel{
 		floor.setTexParams(floor_tex);
 		floor_tex.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
 		
+=======
+>>>>>>> Kyle
 		staticEntities.add(floor);
 		staticEntities.add(ceiling);
 
@@ -87,11 +67,14 @@ public class Temple extends BasicLevel{
 		BasicObject capitol_R_top = new BasicObject(10 * x, 8f, 10f, 1.2f, .8f, 2f);
 		BasicObject capitol_L_top = new BasicObject(10 * x, 8f, 0f, 1.2f, .8f, 2f);
 
+<<<<<<< HEAD
 		TextureParameters columns = new TextureParameters();
 		columns.setTexGenMode(TextureParameters.texCoordGenMode.SPHERE);
 		columns.setTextured(true);
 		columns.setTextureName("marble");
 		
+=======
+>>>>>>> Kyle
 		
 		column_L.setDiffuse(column_color);
 		column_R.setDiffuse(column_color);
@@ -101,12 +84,21 @@ public class Temple extends BasicLevel{
 		capitol_R_top.setDiffuse(column_color);
 
 
+<<<<<<< HEAD
 		column_L.setSpecular(zero_array);
 		column_R.setSpecular(zero_array);
 		capitol_L_bot.setSpecular(zero_array);
 		capitol_R_bot.setSpecular(zero_array);
 		capitol_L_top.setSpecular(zero_array);
 		capitol_R_top.setSpecular(zero_array);
+=======
+		column_L.setSpecular(new float[]{.2f, .2f, .2f, 1});
+		column_R.setSpecular(new float[]{.2f, .2f, .2f, 1});
+		capitol_L_bot.setSpecular(new float[]{.2f, .2f, .2f, 1});
+		capitol_R_bot.setSpecular(new float[]{.2f, .2f, .2f, 1});
+		capitol_L_top.setSpecular(new float[]{.2f, .2f, .2f, 1});
+		capitol_R_top.setSpecular(new float[]{.2f, .2f, .2f, 1});
+>>>>>>> Kyle
 
 
 		column_L.setObject("cylinder");
@@ -116,12 +108,15 @@ public class Temple extends BasicLevel{
 		capitol_R_top.setObject("cube");
 		capitol_L_top.setObject("cube");
 
+<<<<<<< HEAD
 		column_L.setTexParams(columns);
 		column_R.setTexParams(columns);
 		capitol_L_bot.setTexParams(columns);
 		capitol_L_top.setTexParams(columns);
 		capitol_R_bot.setTexParams(columns);
 		capitol_R_top.setTexParams(columns);
+=======
+>>>>>>> Kyle
 		
 		staticEntities.add(column_L);
 		staticEntities.add(column_R);
@@ -129,7 +124,11 @@ public class Temple extends BasicLevel{
 		staticEntities.add(capitol_R_bot);
 		staticEntities.add(capitol_L_top);
 		staticEntities.add(capitol_R_top);
+<<<<<<< HEAD
 		
+=======
+		}
+>>>>>>> Kyle
 		
 		//Walls
 		BasicObject wall_L = new BasicObject(40, 0f, -3, 100, 2.5f, 10, 90f, 0, 0);
@@ -137,8 +136,11 @@ public class Temple extends BasicLevel{
 		
 		wall_L.setDiffuse(wall_color);
 		wall_R.setDiffuse(wall_color);
+<<<<<<< HEAD
 		wall_L.setSpecular(zero_array);
 		wall_R.setSpecular(zero_array);
+=======
+>>>>>>> Kyle
 		
 		wall_L.setObject("plane");
 		wall_R.setObject("plane");
@@ -146,6 +148,7 @@ public class Temple extends BasicLevel{
 		staticEntities.add(wall_L);
 		staticEntities.add(wall_R);
 		
+<<<<<<< HEAD
 		BasicObject wall_back = new BasicObject(0f, -83f, 5f, 30f, 2.5f, 30f, 0f, 0f, 90f);
 		BasicObject wall_behind = new BasicObject(-5f, -3f, 5f, 25f, 2.5f, 25f, 0f, 0f, -90f);
 
@@ -156,6 +159,16 @@ public class Temple extends BasicLevel{
 		
 		wall_back.setObject("plane");
 		wall_behind.setObject("plane");
+=======
+		BasicObject wall_back = new BasicObject(5f, -90f, 5f, 25f, 2.5f, 25f, 0f, 0f, 90f);
+		BasicObject wall_behind = new BasicObject(-5f, -10f, 5f, 25f, 2.5f, 25f, 0f, 0f, -90f);
+
+		wall_back.setDiffuse(wall_color);
+		wall_behind.setDiffuse(wall_color);
+		
+		wall_back.setObject("plane");
+		wall_behind.setDiffuse(wall_color);
+>>>>>>> Kyle
 		
 		staticEntities.add(wall_back);
 		staticEntities.add(wall_behind);
@@ -164,23 +177,27 @@ public class Temple extends BasicLevel{
 		//Pedestal
 		BasicObject pedestal = new BasicObject(80, -1f, 5f, 2, .8f, 2);
 		pedestal.setDiffuse(column_color);
+<<<<<<< HEAD
 		pedestal.setSpecular(zero_array);
 		pedestal.setObject("cube");
 		staticEntities.add(pedestal);
 		
 		//Statue
-		Statue statue = new Statue(80, 1f, 5f, 4f, 4f, 4f, 0f, -90f, 0f);
+		BasicObject statue = new BasicObject(80, 1f, 5f, 4f, 4f, 4f, 0f, 0f, 0f);
 		statue.setDiffuse(column_color);
 		statue.setSpecular(zero_array);
 		statue.setObject("statue");
-		
-		statue.setAnimation("statue1");
-		statue.setAnimation("statue2");
-		statue.setAnimation("statue3");
-		statue.setAnimation("statue4");
-		statue.setFunction(InteractiveObject.Function.LEVEL_EVENT);
 		//statue.setTexParams(columns);
-		interactiveEntities.add(statue);
+=======
+		pedestal.setObject("cube");
+		staticEntities.add(pedestal);
+		
+		//Statue placeholder
+		BasicObject statue = new BasicObject(80, 0f, 5f);
+		statue.setDiffuse(column_color);
+		statue.setObject("statue");
+>>>>>>> Kyle
+		staticEntities.add(statue);
 		
 		//Pond and plants
 		BasicObject pond = new BasicObject(80, -.9f, 5f, 6f, 1f, 6f);
@@ -199,7 +216,10 @@ public class Temple extends BasicLevel{
 		
 		staticEntities.add(plant_L);
 		staticEntities.add(plant_R);
+<<<<<<< HEAD
 		}
+=======
+>>>>>>> Kyle
 	}
 	
 	public ArrayList<BasicObject> getStaticEntities(){
@@ -209,6 +229,9 @@ public class Temple extends BasicLevel{
 	public void setStaticLights(){
 		
 	}
+<<<<<<< HEAD
+
+=======
 	@Override
 	public int getStartX(){
 		return 1;
@@ -222,36 +245,5 @@ public class Temple extends BasicLevel{
 	public String getLevelMusic(){
 		return "temptemple.wav";
 	}
-	
-	public Boolean[][] getCollisionArray(){
-		return collisionArray;
-	}
-	
-	public ArrayList<InteractiveObject> getInteractiveEntities(){
-		return interactiveEntities;
-	}
-	
-	public void eventHappened(){
-		//Sleep for 20
-		staticEntities.remove(statue);
-		InteractiveObject statue = new InteractiveObject(80, 1f, 5f, 4f, 4f, 4f, 0f, 0f, 0f);
-		statue.setDiffuse(column_color);
-		statue.setSpecular(zero_array);
-		statue.setObject("statue");
-		statue.setFunction(InteractiveObject.Function.NEXT_LEVEL);
-		interactiveEntities.add(statue);
-	}
-	
-	public boolean checkTrigger(float xpos, float ypos, float zpos){
-		
-		if (xpos > 70){
-		eventHappened();
-		this.eventTriggered = true;
-		this.levelUpdated = true;
-		return true;
-		}
-		else return false;
-
-		
-	}
+>>>>>>> Kyle
 }

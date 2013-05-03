@@ -4,6 +4,10 @@ import java.util.ArrayList;
 public class BasicLevel {
 
 
+		//Turn off by default
+		boolean hasTrigger = false;
+		boolean eventTriggered = false;
+		boolean levelUpdated = false;
 
 		protected ArrayList<BasicObject> staticEntities;
 		private ArrayList<BasicObject> dynamicEntities;
@@ -117,5 +121,18 @@ public class BasicLevel {
 		public ArrayList<InteractiveObject> getInteractiveEntities(){
 			return interactiveEntities;
 		}
+		
+		public void eventHappened(){
+			
+			//Change something
+		}
+		
+		//Check a condition to start a change in the level
+		public boolean checkTrigger(float xpos, float ypos, float zpos){
+			return false;
+		}
+		
+		
+		
 	}
 

@@ -1,6 +1,12 @@
 
 public class InteractiveObject extends BasicObject{
 
+	public enum Function{
+		NEXT_LEVEL, LEVEL_EVENT
+	}
+	
+	Function function;
+	
 	public boolean interactive = false;
 	
 	public InteractiveObject(float xPos, float yPos, float zPos) {
@@ -22,11 +28,13 @@ public class InteractiveObject extends BasicObject{
 
     }
 
-	@Override
-    public float[] getDiffuseColor(){
+	
+    public float[] getRandomDiffuseColor(){
     	float[] tempfloat = { (float) Math.random(), (float)Math.random(), (float)Math.random(), 1 };
     	return tempfloat;
     }
+	
+	
 	
 	public void setInteractive(boolean interactive){
 		this.interactive = interactive;
@@ -35,4 +43,14 @@ public class InteractiveObject extends BasicObject{
 	public boolean isInteractive(){
 		return interactive;
 	}
+	
+	public void setFunction(InteractiveObject.Function func){
+		this.function = func;
+	}
+	
+	public Function getFunction(){
+		return this.function;
+	}
 }
+
+
