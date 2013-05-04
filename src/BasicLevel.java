@@ -7,6 +7,7 @@ public class BasicLevel {
 		protected ArrayList<BasicObject> staticEntities;
 		private ArrayList<BasicObject> dynamicEntities;
 		protected ArrayList<InteractiveObject> interactiveEntities;
+		protected ArrayList<CollisionObject> collisionObjects;
 		protected Boolean[][] collisionArray; 
 		
 		public BasicLevel(){
@@ -115,6 +116,10 @@ public class BasicLevel {
 		
 		public ArrayList<InteractiveObject> getInteractiveEntities(){
 			return interactiveEntities;
+		}
+		
+		public ArrayList<CollisionObject> getCollisionEntities(){
+			return collisionObjects;
 		}
 		
 		public void eventHappened(){

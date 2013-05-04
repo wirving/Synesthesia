@@ -7,7 +7,18 @@ public class BasicObject {
 	boolean goUp = true;
 	int whichFrame = 0;
 	
-	public void animateObject(){
+	public boolean equals(Object o){
+		BasicObject other = (BasicObject)o;
+		
+		if (other.getXPos() == this.getXPos() && other.getYPos() == this.getYPos() && other.getZPos() == this.getZPos() && other.getObject().equals(this.getObject()))
+			return true;
+		
+		return false;
+	}
+	
+	public void animateObject(int interval){
+		
+	//if (System.currentTimeMillis()%interval == 0){	
 	if (whichFrame == animationCycle.size()-1){
 		goUp = false;
 	}
@@ -23,10 +34,22 @@ public class BasicObject {
 	}
 	
 	this.setObject(animationCycle.get(whichFrame));
-	}
+	//}
+	
+	//else{
+	
+	//	this.setObject(this.getObject());
+	//}
+}
+	
+	public float[] getRandomDiffuseColor(){
+    	float[] tempfloat = { (float) Math.random(), (float)Math.random(), (float)Math.random(), 1 };
+    	return tempfloat;
+    }
 	
 	public void setAnimation(String nextObjName){
-		animationCycle.add(nextObjName);
+		animationCycle.add(nextObjName);	
+	
 	}
 
 	// X,Y,Z Position of Object

@@ -583,7 +583,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				
 				switch (function){
 				case NEXT_LEVEL:
-					if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < 2 ){
+					if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < currentObject.radius ){
 			    		nextLevel();
 			    	}
 					break;
@@ -665,6 +665,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	//For temple set light0 position to {0, 5, 1, 0}
 	private ArrayList<BasicObject> objects;
 	private ArrayList<InteractiveObject> interactiveObjects;
+	private ArrayList<CollisionObject> collisionObjects;
 	private Boolean[][] collisionArray; 
 	
 	private boolean collisionDetect = true;
@@ -716,12 +717,14 @@ public void makeTextureMap(){
 		filenames.add("sky_map.png");
 		filenames.add("grass.png");
 		
+		
 		ArrayList<String> tex_names = new ArrayList<String>();
 		tex_names.add("floor");
 		tex_names.add("marble");
 		tex_names.add("tiles2");
 		tex_names.add("sky");
 		tex_names.add("grass");
+		
 		
 		for (int i = 0; i < tex_names.size(); i++){
 		Texture tex = null;
@@ -742,7 +745,7 @@ public void makeTextureMap(){
 	}
 	
 	public void makeLevelList(){
-		levelList.add(outside);
+		levelList.add(levelOne);
 		levelList.add(transition1);
 		levelList.add(levelTwo);
 		levelList.add(temple);
@@ -757,6 +760,7 @@ public void makeTextureMap(){
 		objects = level.getStaticEntities();
 		interactiveObjects = level.getInteractiveEntities();
 		collisionArray = level.getCollisionArray();
+		collisionObjects = level.getCollisionEntities();
 		xpos = level.getStartX();
 		zpos = level.getStartZ();
 		changeMusic(level.getLevelMusic());
@@ -767,6 +771,7 @@ public void makeTextureMap(){
 		objects = currentLevel.getStaticEntities();
 		interactiveObjects = currentLevel.getInteractiveEntities();
 		collisionArray = currentLevel.getCollisionArray();
+		collisionObjects = currentLevel.getCollisionEntities();
 		changeMusic(currentLevel.getLevelMusic());
 	}
 	
@@ -832,9 +837,8 @@ public void makeTextureMap(){
 		cube.Draw();
 		gl.glPopMatrix();
 		*/
+	
 		
-		
-		//Check triggers
 		
 		
 		
@@ -975,6 +979,34 @@ public void makeTextureMap(){
 			gl.glPopMatrix();
 			}
 		}
+		
+		if(collisionObjects != null){
+			for(final CollisionObject currentObject : collisionObjects){
+				
+				gl.glPushMatrix();
+				currentObject.Move(xpos,ypos,zpos);
+				
+				if (currentObject.playerCollision(xpos, ypos, zpos))
+						nextLevel();
+				
+				gl.glTranslatef(currentObject.getXPos(), currentObject.getYPos(), currentObject.getZPos());
+				
+			    gl.glRotatef(currentObject.getXRot(), 1f, 0f, 0f);
+			    gl.glRotatef(currentObject.getYRot(), 0f, 1f, 0f);
+			    gl.glRotatef(currentObject.getZRot(), 0f, 0f, 1f);
+			    
+				gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, currentObject.getRandomDiffuseColor(), 0);
+				
+			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, currentObject.getSpecularColor(), 0);
+			    gl.glScalef(currentObject.getXScale(), currentObject.getYScale(), currentObject.getZScale());
+			    
+			    Texture tex = textureMap.get(currentObject.getTexParams().getTextureName());
+		    	objectMap.get(currentObject.getObject()).Draw(tex, currentObject.getTexParams());
+				//cube.Draw();
+				gl.glPopMatrix();
+				}
+			}
+		
 		
 		gl.glPopMatrix(); //End Drawing
 		

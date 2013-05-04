@@ -6,21 +6,26 @@ public class Temple extends BasicLevel{
 	private ArrayList<BasicObject> staticEntities;
 	private ArrayList<BasicObject> dynamicEntities;
 	private ArrayList<InteractiveObject> interactiveEntities;
+	private ArrayList<CollisionObject> collisionObjects;
 	private Boolean[][] collisionArray; 
 	private ArrayList<Light> lights;
-	BasicObject statue;
+	InteractiveObject statue;
 	float[] column_color = new float[]{.95f, .9f, .9f, 1f};
 	float[] wall_color = new float[]{.65f, .6f, .6f, 1f}; //.6 .4 .3
 	float[] zero_array = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
+	String music;
+	
 	
 	public boolean levelUpdated = false;
 	
 	public Temple(){
 		
+		music = "temptemple.wav";
 		setStaticLights();
 		staticEntities = new ArrayList<BasicObject>();
 		collisionArray = new Boolean[84][11];
 		interactiveEntities = new ArrayList<InteractiveObject>();
+		collisionObjects = new ArrayList<CollisionObject>();
 		
 		for(int x = 0; x < 84; x++){
 			for (int z = 0; z < 11; z++){
@@ -71,6 +76,7 @@ public class Temple extends BasicLevel{
 		floor_tex.setTilingCoefficients(new float[]{8f, 1f, 1f});
 		floor.setTexParams(floor_tex);
 		floor_tex.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
+		ceiling.setTexParams(floor_tex);
 		
 		staticEntities.add(floor);
 		staticEntities.add(ceiling);
@@ -182,20 +188,17 @@ public class Temple extends BasicLevel{
 		pedestal.setDiffuse(column_color);
 		pedestal.setSpecular(zero_array);
 		pedestal.setObject("cube");
+		pedestal.setTexParams(columns);
 		staticEntities.add(pedestal);
 		
 		//Statue
-		Statue statue = new Statue(80, 1f, 5f, 4f, 4f, 4f, 0f, -90f, 0f);
+		statue = new InteractiveObject(80, 1f, 5f, 4f, 4f, 4f, 0f, -90f, 0f, 10);
 		statue.setDiffuse(column_color);
 		statue.setSpecular(zero_array);
 		statue.setObject("statue");
-		
-		statue.setAnimation("statue1");
-		statue.setAnimation("statue2");
-		statue.setAnimation("statue3");
-		statue.setAnimation("statue4");
 		statue.setFunction(InteractiveObject.Function.LEVEL_EVENT);
-		//statue.setTexParams(columns);
+		statue.setTexParams(columns);
+	
 		interactiveEntities.add(statue);
 		
 		//Pond and plants
@@ -239,7 +242,11 @@ public class Temple extends BasicLevel{
 	
 	@Override
 	public String getLevelMusic(){
-		return "temptemple.wav";
+		return music;
+	}
+	
+	public void setLevelMusic(String filename){
+		music = filename;
 	}
 	
 	public Boolean[][] getCollisionArray(){
@@ -250,6 +257,29 @@ public class Temple extends BasicLevel{
 		return interactiveEntities;
 	}
 	
+	public ArrayList<CollisionObject> getCollisionEntities(){
+		return collisionObjects;
+	}
+	
+	public void eventHappened(){
+		
+		interactiveEntities.clear();
+		Statue statue_coll = new Statue(80f, 1f, 5f, 4f, 4f, 4f, 0f, -90f, 0f);
+		statue_coll.setDiffuse(column_color);
+		statue_coll.setSpecular(zero_array);
+		
+		statue_coll.setAnimation("statue1");
+		statue_coll.setAnimation("statue1");
+		statue_coll.setAnimation("statue2");
+		statue_coll.setAnimation("statue2");
+		statue_coll.setAnimation("statue3");
+		statue_coll.setAnimation("statue3");
+		statue_coll.setAnimation("statue4");
+		statue_coll.setAnimation("statue4");
+		collisionObjects.add(statue_coll);
+		music = "transition1.wav";
+		
+	}
 	
 
 }
