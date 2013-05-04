@@ -18,8 +18,6 @@ public class Temple extends BasicLevel{
 	public Temple(){
 		
 		setStaticLights();
-		hasTrigger = true;
-		eventTriggered = false;
 		staticEntities = new ArrayList<BasicObject>();
 		collisionArray = new Boolean[84][11];
 		interactiveEntities = new ArrayList<InteractiveObject>();
@@ -252,27 +250,6 @@ public class Temple extends BasicLevel{
 		return interactiveEntities;
 	}
 	
-	public void eventHappened(){
-		//Sleep for 20
-		staticEntities.remove(statue);
-		InteractiveObject statue = new InteractiveObject(80, 1f, 5f, 4f, 4f, 4f, 0f, 0f, 0f);
-		statue.setDiffuse(column_color);
-		statue.setSpecular(zero_array);
-		statue.setObject("statue");
-		statue.setFunction(InteractiveObject.Function.NEXT_LEVEL);
-		interactiveEntities.add(statue);
-	}
 	
-	public boolean checkTrigger(float xpos, float ypos, float zpos){
-		
-		if (xpos > 70){
-		eventHappened();
-		this.eventTriggered = true;
-		this.levelUpdated = true;
-		return true;
-		}
-		else return false;
 
-		
-	}
 }
