@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 //import javax.media.opengl.GL;
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.awt.GLCanvas;
@@ -42,6 +43,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
@@ -61,6 +63,8 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		public int num_faces;		// number of triangle faces
 
 		public void Draw(Texture tex, TextureParameters params) {
+			
+			
 			vertexBuffer.rewind();
 			normalBuffer.rewind();
 			faceBuffer.rewind();
@@ -71,6 +75,21 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			float[] zPlane = {0.0f, 0.0f, 1.0f *tiling[2], 0.0f};
 			float[] xPlane = {1.0f * tiling[0], 0.0f, 0.0f, 0.0f};
 			float[] yPlane = {0.0f, 1.0f * tiling[1], 0.0f, 0.0f};
+			
+			Texture random = null;
+			if (params != null && params.useRandomTexture() == true){ //Random texture
+				//gl.glTexImage2D(GL2.GL_TEXTURE_2D, 0, GL2.GL_RGB, 256, 256, 0, GL2.GL_RGB, GL2.GL_BYTE, params.getRandomBuffer());
+				
+				TextureData data = new TextureData(gl.getGLProfile(), GL2.GL_RGB, 256, 256, 0, GL2.GL_RGB, GL2.GL_BYTE, false, false, false, params.getRandomBuffer(), null );
+				random = new Texture(gl, data);
+				random.enable(gl);
+				random.bind(gl);
+				gl.glEnable(GL2.GL_TEXTURE_GEN_S);
+				//gl.glEnable(GL2.GL_TEXTURE_GEN_T);
+				gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_SPHERE_MAP);
+				//gl.glTexGeni(GL2.GL_T, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
+				
+			}
 			
 			if (tex != null){
 				tex.enable(gl);
@@ -119,15 +138,23 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
 			
 			if (tex != null){
-				if (params.getTexGenMode() == TextureParameters.texCoordGenMode.PLANE){
+				if (params.getTexGenMode() == TextureParameters.texCoordGenMode.PLANE || params.getTexGenMode() == TextureParameters.texCoordGenMode.SPHERE_MAP){
 					gl.glDisable(GL2.GL_TEXTURE_GEN_S);
 					gl.glDisable(GL2.GL_TEXTURE_GEN_T);
 				}
-				else{ //Sphere
+				else if (params.getTexGenMode() == TextureParameters.texCoordGenMode.SPHERE) { //Sphere
 					gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 				}
 				
+				
 			tex.disable(gl);
+			}
+			
+			if (params != null && params.useRandomTexture() == true){
+			
+			gl.glDisable(GL2.GL_TEXTURE_GEN_S);
+			//gl.glDisable(GL2.GL_TEXTURE_GEN_T);
+			random.disable(gl);
 			}
 		}
 		
@@ -562,6 +589,8 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 					break;
 				case LEVEL_EVENT:
 					//Do something in level
+					currentLevel.eventHappened();
+					updateLevel();
 				}
 				
 		    	
@@ -671,6 +700,9 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("statue2", new objModel("statue_step_2_new.obj"));
 		objectMap.put("statue3", new objModel("statue_step_3_new.obj"));
 		objectMap.put("statue4", new objModel("statue_step_4_new.obj"));
+		objectMap.put("rock", new objModel("rock.obj"));
+		objectMap.put("pond", new objModel("pond2.obj"));
+		objectMap.put("deer", new objModel("deer_jump.obj"));
 
 		
 	}
@@ -682,19 +714,21 @@ public void makeTextureMap(){
 		filenames.add("marble_tile2.jpg");
 		filenames.add("tiles.jpg");
 		filenames.add("sky_map.png");
+		filenames.add("grass.png");
 		
 		ArrayList<String> tex_names = new ArrayList<String>();
 		tex_names.add("floor");
 		tex_names.add("marble");
 		tex_names.add("tiles2");
 		tex_names.add("sky");
+		tex_names.add("grass");
 		
 		for (int i = 0; i < tex_names.size(); i++){
 		Texture tex = null;
 		try{
 			tex = TextureIO.newTexture(new File(filenames.get(i)), false);
 			
-		} catch (IOException e){
+		} catch (Exception e){
 			System.out.println("Could not open the file!");
 		}
 		
@@ -708,7 +742,7 @@ public void makeTextureMap(){
 	}
 	
 	public void makeLevelList(){
-		levelList.add(levelOne);
+		levelList.add(outside);
 		levelList.add(transition1);
 		levelList.add(levelTwo);
 		levelList.add(temple);
