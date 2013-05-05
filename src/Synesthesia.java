@@ -52,7 +52,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
 	private static final int LEVEL_OUTSIDE = 7;
-	private static final int LEVEL_END_SCREEN = 0;
+	private static final int LEVEL_END_SCREEN = 8;
 	private static final int LEVEL_TITLE_SCREEN = 1;
 	private static final int LEVEL_TRANS_2 = 6;
 
@@ -328,14 +328,16 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		case (int)'Q':
 			System.exit(0);
 			break;		
+			/*
 		case (int) 'r':
 		case (int) 'R':
 			initViewParameters();
 			break;
+			*/
 		/*case 'w':
 		case 'W':
 			wireframe = ! wireframe;
-			break;*/
+			break;
 		case (int) 'b':
 		case (int) 'B':
 			cullface = !cullface;
@@ -350,7 +352,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 				animator.stop();
 			else 
 				animator.start();
-			break;*/
+			break;
 		case (int) '+':
 		case (int) '=':
 			animation_speed *= 1.2f;
@@ -359,6 +361,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		case (int) '_':
 			animation_speed /= 1.2;
 			break;
+			*/
 		//case KeyEvent.VK_UP:
 		//case (int) 'I':
 		case (int) 'W':
@@ -657,7 +660,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	private Robot robot;
 	private boolean mouseLock=false;
 	private FPSAnimator animator;
-	private int winW = 800, winH = 800;
+	//private int winW = 800, winH = 800;
 	private boolean wireframe = false;
 	private boolean cullface = false;
 	private boolean flatshade = false;
@@ -751,16 +754,28 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("doe", new objModel("deer_female.obj"));
 		objectMap.put("bird", new objModel("bird2.obj"));
 		objectMap.put("bunny", new objModel("bunny.obj"));
+		objectMap.put("vase", new objModel("vase.obj"));
 	}
 	
 	public void restart(){
 
-		levelOne = new LevelOne();
-		levelTwo = new LevelTwo();
-		temple = new Temple();
-		outside = new Outside();
-		transition1 = new Transition1();
-		transition2 = new Transition2();
+		interactiveObjects.clear();
+		objects.clear();
+		grabableObjects.clear();
+		conditionalTimedObjects.clear();
+		textObjects.clear();
+		conditionalTimedObjects.clear();
+		collisionObjects.clear();
+		//collisionArray.clear();
+		
+		this.titleScreen = new TitleScreen();
+		this.endScreen = new EndScreen();
+		this.levelOne = new LevelOne();
+		this.levelTwo = new LevelTwo();
+		this.temple = new Temple();
+		this.outside = new Outside();
+		this.transition1 = new Transition1();
+		this.transition2 = new Transition2();
 		nextLevel = 0;
 		makeLevelList();
 	}
@@ -1189,7 +1204,7 @@ public void makeTextureMap(){
 		canvas.addMouseMotionListener(this);
 		animator = new FPSAnimator(canvas, 60);	// create a 30 fps animator
 		getContentPane().add(canvas);
-		setSize(winW, winH);
+		setSize(width, height);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
@@ -1297,9 +1312,9 @@ public void makeTextureMap(){
 	}
 	
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-		winW = width;
+		/*winW = width;
 		winH = height;
-
+*/
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 			gl.glLoadIdentity();
@@ -1308,19 +1323,24 @@ public void makeTextureMap(){
 	}
 	
 	public void mousePressed(MouseEvent e) {	
+		/*
 		mouseX = e.getX();
 		mouseY = e.getY();
 		mouseButton = e.getButton();
 		canvas.display();
+		*/
 	}
 	
 	public void mouseReleased(MouseEvent e) {
+		/*
 		mouseButton = MouseEvent.NOBUTTON;
 		canvas.display();
+		*/
+		
 	}	
 	
 	public void mouseDragged(MouseEvent e) {
-		int x = e.getX();
+		/*int x = e.getX();
 		int y = e.getY();
 		if (mouseButton == MouseEvent.BUTTON3) {
 			zpos -= (y - mouseY) * motionSpeed;
@@ -1340,6 +1360,7 @@ public void makeTextureMap(){
 			mouseY = y;
 			canvas.display();
 		}
+		*/
 	}
 	
 	

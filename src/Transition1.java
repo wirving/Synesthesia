@@ -43,7 +43,7 @@ public class Transition1 extends BasicLevel{
 		text1.setText("A WALK IN THE DARK");
 		textObjects.add(text1);
 		
-		TextObject text2 = new TextObject(30,-.5f,-3,.005f,.005f,.005f,0,1f,0);
+		TextObject text2 = new TextObject(30,-.25f,-3,.005f,.005f,.005f,0,1f,0);
 		text2.setRotDegree(255);
 		text2.setDiffuse(new float[] { 0f, 1f, 1f, 0f});
 		text2.setText("TIME TO REFLECT ON YOUR CURRENT SITUATION");

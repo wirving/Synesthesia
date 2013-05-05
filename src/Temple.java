@@ -237,7 +237,7 @@ public class Temple extends BasicLevel{
 	}
 	@Override
 	public int getStartX(){
-		return 70;
+		return 1;
 	}
 	@Override
 	public int getStartZ(){
