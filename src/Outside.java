@@ -83,17 +83,23 @@ public class Outside extends BasicLevel {
 		staticEntities.add(ground);
 		
 		//Some trees!
-		BasicObject tree = new BasicObject(15, 1, 18, 3f, 3f, 3f);
+		BasicObject tree = new BasicObject(18, 1, 18, 3f, 3f, 3f);
 		collisionArray[(int)tree.getXPos()][(int)tree.getZPos()] = true;
 		
-		BasicObject tree2 = new BasicObject(18, 0.5f, 17, 1.5f, 1.5f, 1.5f);
+		BasicObject tree2 = new BasicObject(20, 0.5f, 17, 1.5f, 1.5f, 1.5f);
 		collisionArray[(int)tree2.getXPos()][(int)tree2.getZPos()] = true;
 		
-		BasicObject tree3 = new BasicObject(6, 2, 13, 4f, 4f, 4f);
+		BasicObject tree3 = new BasicObject(4, 2, 13, 4f, 4f, 4f);
 		collisionArray[(int)tree3.getXPos()][(int)tree3.getZPos()] = true;
 		
 		BasicObject tree4 = new BasicObject(2, 1, 20, 3f, 3f, 3f, 0f, 45f, 0f);
 		collisionArray[(int)tree4.getXPos()][(int)tree4.getZPos()] = true;
+		
+		BasicObject tree5 = new BasicObject(14, 2, 2, 4.5f, 4.5f, 4.5f);
+		collisionArray[(int)tree5.getXPos()][(int)tree5.getZPos()] = true;
+		
+		BasicObject tree6 = new BasicObject(27, 1f, 5, 2f, 2f, 2f);
+		collisionArray[(int)tree6.getXPos()][(int)tree6.getZPos()] = true;
 		
 		BasicObject pond = new BasicObject(12, -0.5f, 15, 8f, 1f, 8f);
 		
@@ -103,6 +109,9 @@ public class Outside extends BasicLevel {
 		BasicObject rock2 = new BasicObject(10, -0.75f, 13, 1f, 1f, 1f);
 		collisionArray[(int)rock.getXPos()][(int)rock.getZPos()] = true;
 		
+		BasicObject rock3 = new BasicObject(7f, -0.5f, 4, 1.5f, 1.5f, 1.5f);
+		collisionArray[(int)rock3.getXPos()][(int)rock3.getZPos()] = true;
+
 		BasicObject plant = new BasicObject(13, -0.5f, 18);
 		collisionArray[(int)plant.getXPos()][(int)plant.getZPos()] = true;
 		
@@ -113,13 +122,13 @@ public class Outside extends BasicLevel {
 		collisionArray[(int)plant3.getXPos()][(int)plant3.getZPos()] = true;
 	
 		
-		BasicObject deer = new BasicObject(17, 0.5f, 13);
+		BasicObject deer = new BasicObject(23, 0.5f, 12);
 		collisionArray[(int)deer.getXPos()][(int)deer.getZPos()] = true;
 		
-		BasicObject deer_fem = new BasicObject(18, -3.75f, 11f, .85f, .85f, .85f, -20f, 0f, 0f);
+		BasicObject deer_fem = new BasicObject(21, -1.5f, 5f, .85f, .85f, .85f, -20f, 0f, 0f);
 		collisionArray[(int)deer_fem.getXPos()][(int)deer_fem.getZPos()] = true;
 		
-		BasicObject deer_small = new BasicObject(17.5f, 1f, 14f, .5f, .5f, .5f, 5f, 0f, 0f);
+		BasicObject deer_small = new BasicObject(25f, .5f, 8f, .5f, .5f, .5f, 5f, 0f, 0f);
 		collisionArray[(int)deer_small.getXPos()][(int)deer_small.getZPos()] = true;
 		
 		BasicObject bird = new BasicObject(10, 5f, 13);
@@ -137,6 +146,13 @@ public class Outside extends BasicLevel {
 		BasicObject bunny = new BasicObject(10f, -.35f, 10f, .15f, .15f, .15f);
 		collisionArray[(int)bunny.getXPos()][(int)bunny.getZPos()] = true;
 		
+		BasicObject rock_near_sphere = new BasicObject(6, -.5f, 24, 1.5f, 1.5f, 1.5f);
+		collisionArray[(int)rock_near_sphere.getXPos()][(int)rock_near_sphere.getZPos()] = true;
+		
+		BasicObject plant_near_sphere = new BasicObject(7, -0.5f, 24, 1f, 1f, 1f);
+		collisionArray[(int)plant_near_sphere.getXPos()][(int)plant_near_sphere.getZPos()] = true;
+
+		
 		tree.setDiffuse(new float[]{.4f, .5f, .3f});
 		bird.setDiffuse(new float[]{.3f, .3f, .3f});
 		bird2.setDiffuse(new float[]{.3f, .3f, .3f});
@@ -145,7 +161,10 @@ public class Outside extends BasicLevel {
 		tree2.setDiffuse(new float[]{.7f, .7f, .5f});
 		tree3.setDiffuse(new float[]{.4f, .4f, .3f});
 		tree4.setDiffuse(new float[]{.3f, .4f, .2f});
+		tree5.setDiffuse(new float[]{.5f, .2f, .2f});
+		tree6.setDiffuse(new float[]{.7f, .6f, .4f});
 		rock.setDiffuse(new float[]{.9f, .9f, .9f});
+		rock3.setDiffuse(new float[]{.9f, .9f, .9f});
 		plant.setDiffuse(new float[]{.5f, .9f, .2f, 0f});
 		plant2.setDiffuse(new float[]{.7f, .9f, .2f, 0f});
 		plant3.setDiffuse(new float[]{.7f, .9f, .2f, 0f});
@@ -154,6 +173,8 @@ public class Outside extends BasicLevel {
 		deer_fem.setDiffuse(new float[]{.6f, .4f, .2f});
 		deer_small.setDiffuse(new float[]{.7f, .5f, .3f});
 		bunny.setDiffuse(new float[]{.8f, .8f, .7f});
+		rock_near_sphere.setDiffuse(new float[]{.9f, .9f, .9f});
+		plant_near_sphere.setDiffuse(new float[]{.5f, .9f, .2f, 0f});
 
 		//pond.setDiffuse(new float[]{.2f, .5f, .9f, 0f});
 		pond.setDiffuse(new float[]{1f, 1f, 1f});
@@ -171,11 +192,14 @@ public class Outside extends BasicLevel {
 		tree2.setSpecular(zero_array);
 		tree3.setSpecular(zero_array);
 		tree4.setSpecular(zero_array);
+		tree5.setSpecular(zero_array);
+		tree6.setSpecular(zero_array);
 		rock.setSpecular(zero_array);
 		plant.setSpecular(zero_array);
 		plant2.setSpecular(zero_array);
 		plant3.setSpecular(zero_array);
 		rock2.setSpecular(zero_array);
+		rock3.setSpecular(zero_array);
 		pond.setSpecular(zero_array);
 		deer.setSpecular(zero_array);
 		deer_fem.setSpecular(zero_array);
@@ -185,17 +209,22 @@ public class Outside extends BasicLevel {
 		bird3.setSpecular(zero_array);
 		bird4.setSpecular(zero_array);
 		bunny.setSpecular(zero_array);
+		rock_near_sphere.setSpecular(zero_array);
+		plant_near_sphere.setSpecular(zero_array);
 
 		
 		tree.setObject("tree_aspen");
 		tree2.setObject("tree_aspen");
 		tree3.setObject("tree_aspen");
 		tree4.setObject("tree_aspen");
+		tree5.setObject("tree_aspen");
+		tree6.setObject("tree_aspen");
 		plant.setObject("plant");
 		plant2.setObject("plant");
 		plant3.setObject("plant");
 		rock.setObject("rock");
 		rock2.setObject("rock");
+		rock3.setObject("rock");
 		pond.setObject("pond");
 		deer.setObject("deer");
 		deer_fem.setObject("doe");
@@ -205,6 +234,8 @@ public class Outside extends BasicLevel {
 		bird3.setObject("bird");
 		bird4.setObject("bird");
 		bunny.setObject("bunny");
+		rock_near_sphere.setObject("rock");
+		plant_near_sphere.setObject("plant");
 		
 		staticEntities.add(tree);
 		staticEntities.add(tree2);
@@ -224,16 +255,20 @@ public class Outside extends BasicLevel {
 		staticEntities.add(bunny);
 		staticEntities.add(deer_fem);
 		staticEntities.add(deer_small);
+		staticEntities.add(rock_near_sphere);
+		staticEntities.add(plant_near_sphere);
+		staticEntities.add(tree5);
+		staticEntities.add(tree6);
+		staticEntities.add(rock3);
 		
-		
-		InteractiveObject magicSphere = new InteractiveObject(7,-.25f,20,.5f,.5f,.5f);
+		InteractiveObject magicSphere = new InteractiveObject(5,-.25f,25,.5f,.5f,.5f);
 		magicSphere.setDiffuse(new float[]{1f, 1f, 1f});
 		magicSphere.setSpecular(new float[]{1f, 1f, 1f});
 		magicSphere.setFunction(InteractiveObject.Function.LEVEL_EVENT);
 		magicSphere.setObject("sphere");
 		magicSphere.radius = 2;
 		
-		collisionArray[7][20] = true;
+		collisionArray[(int)magicSphere.getXPos()][(int)magicSphere.getZPos()] = true;
 		//sky_tex.setTexGenMode(TextureParameters.texCoordGenMode.SPHERE_MAP);
 		//magicSphere.setTexParams(sky_tex);
 		
@@ -289,23 +324,27 @@ public class Outside extends BasicLevel {
 		ground.setTexParams(grass_tex);
 		staticEntities.add(ground);
 		
-		JitteringObject tree = new JitteringObject(15f, 1f, 18f, 2f, 2f, 2f, 1f, 50f);
-		JitteringObject tree2 = new JitteringObject(18, 0.5f, 17, 1.5f, 1.5f, 1.5f, 0.5f, 50f);
-		JitteringObject tree3 = new JitteringObject(6, 2, 13, 2f, 2f, 2f, 1f, 50f);
+		JitteringObject tree = new JitteringObject(18, 1, 18, 3f, 3f, 3f, 1f, 50f);
+		JitteringObject tree2 = new JitteringObject(20, 0.5f, 17, 1.5f, 1.5f, 1.5f, 0.5f, 50f);
+		JitteringObject tree3 = new JitteringObject(4, 2, 13, 2f, 2f, 2f, 1f, 50f);
 		JitteringObject tree4 = new JitteringObject(2f, 1f, 20f, 3f, 3f, 3f, 0f, 45f, 0f, 1f, 50f);
+		JitteringObject tree5 = new JitteringObject(14, 2, 2, 4.5f, 4.5f, 4.5f, 1f, 50f);
+		JitteringObject tree6 = new JitteringObject(27, 1f, 5, 2f, 2f, 2f, 1f, 50f);
 		
 		CollisionObject pond = new CollisionObject(12f, -0.5f, 15f, 5f, 1f, 5f);
 		
 		JitteringObject rock = new JitteringObject(15, -0.75f, 15, 1f, 1f, 1f, -0.75f, -.5f);
 		JitteringObject rock2 = new JitteringObject(10, -0.75f, 13, 1f, 1f, 1f, -0.75f, -.5f);
+		JitteringObject rock3 = new JitteringObject(7f, -0.5f, 4, 1.5f, 1.5f, 1.5f, -0.5f, -.25f);
+
 		
-		JitteringObject plant = new JitteringObject(13, -0.5f, 18, -0.5f, -0.5f);
-		JitteringObject plant2 = new JitteringObject(14f, -0.5f, 18, .85f, .85f, .85f, 0f, 20f, 0f, -0.5f, -0.5f);
-		JitteringObject plant3 = new JitteringObject(10f, -0.5f, 11f, .5f, .5f, .5f, 0f, 45f, 0f, -0.5f, -0.5f);
+		JitteringObject plant = new JitteringObject(13, -0.5f, 18, -0.5f, 50f);
+		JitteringObject plant2 = new JitteringObject(14f, -0.5f, 18, .85f, .85f, .85f, 0f, 20f, 0f, -0.5f, 50f);
+		JitteringObject plant3 = new JitteringObject(10f, -0.5f, 11f, .5f, .5f, .5f, 0f, 45f, 0f, -0.5f, 50f);
 		
-		RotatingObject deer = new RotatingObject(17, 0.5f, 13);
-		RotatingObject deer_fem = new RotatingObject(18, -3.75f, 11f, .85f, .85f, .85f, -20f, 0f, 0f);
-		RotatingObject deer_small = new RotatingObject(17.5f, 1f, 14f, .5f, .5f, .5f, 5f, 0f, 0f);
+		RotatingObject deer = new RotatingObject(23, 0.5f, 12);
+		RotatingObject deer_fem = new RotatingObject(21, -1.5f, 5f, .85f, .85f, .85f, -20f, 0f, 0f);
+		RotatingObject deer_small = new RotatingObject(25f, .5f, 8f, .5f, .5f, .5f, 5f, 0f, 0f);
 		
 		
 		RotatingObject bird = new RotatingObject(10, 5f, 13);
@@ -315,6 +354,8 @@ public class Outside extends BasicLevel {
 		
 		RotatingObject bunny = new RotatingObject(10f, -.35f, 10f, .15f, .15f, .15f, 0f, 0f, 0f);
 
+		JitteringObject rock_near_sphere = new JitteringObject(6, -.5f, 24, 1.5f, 1.5f, 1.5f);
+		JitteringObject plant_near_sphere = new JitteringObject(7, -0.5f, 24, 1f, 1f, 1f);
 		
 		TextureParameters random = new TextureParameters();
 		random.setTextured(true);
@@ -349,21 +390,31 @@ public class Outside extends BasicLevel {
 		plant.setTexParams(random);
 		plant2.setTexParams(random3);
 		plant3.setTexParams(random2);
-		
+		rock_near_sphere.setTexParams(random4);
+		plant_near_sphere.setTexParams(random2);
+		rock3.setTexParams(random4);
+		tree5.setTexParams(random3);
+		tree6.setTexParams(random);
 		
 		tree.setDiffuse(tree.getDiffuseFlicker());
 		tree2.setDiffuse(new float[]{1f, 1f, 1f});
 		tree3.setDiffuse(new float[]{1f, 1f, 1f});
+		tree4.setDiffuse(new float[]{1f, 1f, 1f});
+		tree5.setDiffuse(new float[]{1f, 1f, 1f});
+		tree6.setDiffuse(new float[]{1f, 1f, 1f});
 		bird2.setDiffuse(new float[]{1f, 1f, 1f});
 		bird3.setDiffuse(new float[]{1f, 1f, 1f});
 		bird4.setDiffuse(new float[]{1f, 1f, 1f});
 		rock.setDiffuse(new float[]{1f, 1f, 1f});
 		plant.setDiffuse(new float[]{1f, 1f, 1f, 1f});
 		rock2.setDiffuse(new float[]{1f, 1f, 1f});
+		rock3.setDiffuse(new float[]{1f, 1f, 1f});
 		deer.setDiffuse(new float[]{1f, 1f, 1f});
 		deer_fem.setDiffuse(new float[]{1f, 1f, 1f});
 		deer_small.setDiffuse(new float[]{1f, 1f, 1f});
 		bunny.setDiffuse(new float[]{1f, 1f, 1f});
+		rock_near_sphere.setDiffuse(new float[]{1f, 1f, 1f});
+		plant_near_sphere.setDiffuse(new float[]{1f, 1f, 1f});
 		//pond.setDiffuse(new float[]{.2f, .5f, .9f, 0f});
 		pond.setDiffuse(new float[]{0f, 0f, 0f});
 		
@@ -374,11 +425,14 @@ public class Outside extends BasicLevel {
 		tree2.setSpecular(zero_array);
 		tree3.setSpecular(zero_array);
 		tree4.setSpecular(zero_array);
+		tree5.setSpecular(zero_array);
+		tree6.setSpecular(zero_array);
 		rock.setSpecular(zero_array);
 		plant.setSpecular(zero_array);
 		plant2.setSpecular(zero_array);
 		plant3.setSpecular(zero_array);
 		rock2.setSpecular(zero_array);
+		rock3.setSpecular(zero_array);
 		pond.setSpecular(zero_array);
 		deer.setSpecular(zero_array);
 		deer_fem.setSpecular(zero_array);
@@ -388,17 +442,23 @@ public class Outside extends BasicLevel {
 		bird3.setSpecular(zero_array);
 		bird4.setSpecular(zero_array);
 		bunny.setSpecular(zero_array);
+		rock_near_sphere.setSpecular(zero_array);
+		plant_near_sphere.setSpecular(zero_array);
+
 
 		
 		tree.setObject("tree_aspen");
 		tree2.setObject("tree_aspen");
 		tree3.setObject("tree_aspen");
 		tree4.setObject("tree_aspen");
+		tree5.setObject("tree_aspen");
+		tree6.setObject("tree_aspen");
 		plant.setObject("plant");
 		plant2.setObject("plant");
 		plant3.setObject("plant");
 		rock.setObject("rock");
 		rock2.setObject("rock");
+		rock3.setObject("rock");
 		pond.setObject("pond");
 		deer.setObject("deer");
 		deer_fem.setObject("doe");
@@ -408,11 +468,15 @@ public class Outside extends BasicLevel {
 		bird3.setObject("bird");
 		bird4.setObject("bird");
 		bunny.setObject("bunny");
+		rock_near_sphere.setObject("rock");
+		plant_near_sphere.setObject("plant");
 		
 		staticEntities.add(tree);
 		staticEntities.add(tree2);
 		staticEntities.add(tree3);	
 		staticEntities.add(tree4);
+		staticEntities.add(tree5);
+		staticEntities.add(tree6);
 		staticEntities.add(rock);
 		staticEntities.add(plant);
 		staticEntities.add(plant2);
@@ -427,11 +491,13 @@ public class Outside extends BasicLevel {
 		staticEntities.add(bunny);
 		staticEntities.add(deer_fem);
 		staticEntities.add(deer_small);
+		staticEntities.add(rock_near_sphere);
+		staticEntities.add(plant_near_sphere);
 		
 		collisionObjects.add(pond);
 		
-		InteractiveObject magicSphere = new InteractiveObject(7,-.25f,20,.5f,.5f,.5f);
-		collisionArray[7][20] = true;
+		InteractiveObject magicSphere = new InteractiveObject(5,-.25f,25,.5f,.5f,.5f);
+		collisionArray[(int)magicSphere.getXPos()][(int)magicSphere.getZPos()] = true;
 		
 		magicSphere.setDiffuse(new float[]{1f, 1f, 1f});
 		magicSphere.setSpecular(new float[]{1f, 1f, 1f});

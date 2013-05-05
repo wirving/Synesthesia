@@ -6,9 +6,14 @@ public class Transition2 extends BasicLevel{
 	public Transition2(){
 		staticEntities = new ArrayList<BasicObject>();
 		interactiveEntities = new ArrayList<InteractiveObject>();
-		BasicObject floor = new BasicObject(4.5f,-1,4.5f,10,1,10);
-		floor.setObject("cube");
-		float[] tempDiffuse = {.5f,.5f,.5f,1};
+		BasicObject floor = new BasicObject(4.5f,-1,4.5f,5,1,5);
+		floor.setObject("sphere");
+		TextureParameters sphere_tex = new TextureParameters();
+		sphere_tex.setTextured(true);
+		sphere_tex.setTextureName("sky");
+		sphere_tex.setTexGenMode(TextureParameters.texCoordGenMode.SPHERE_MAP);
+		floor.setTexParams(sphere_tex);
+		float[] tempDiffuse = {1f,1f,1f,1};
 		floor.setDiffuse(tempDiffuse);
 		staticEntities.add(floor);
 		
