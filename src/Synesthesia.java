@@ -626,7 +626,14 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 							currentLevel.eventHappened();
 							updateLevel();
 						}
-					}		    	
+						break;
+					case RESTART:
+						if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < currentObject.radius ){
+							restart();
+						}
+						break;
+					}		
+		
 				}
 			}
 			break;
@@ -732,7 +739,6 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("bottle", new objModel("bottle.obj"));
 		objectMap.put("tree_aspen",  new objModel("tree_aspen.obj"));
 		objectMap.put("sphere", new objModel("small_sphere.obj"));
-		objectMap.put("statue1", new objModel("statue_step_1_new_shoulder.obj"));
 		objectMap.put("statue2", new objModel("statue_step_15.obj"));
 		objectMap.put("statue3", new objModel("statue_step_2_new.obj"));
 		objectMap.put("statue4", new objModel("statue_step_25.obj"));
@@ -745,6 +751,18 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("doe", new objModel("deer_female.obj"));
 		objectMap.put("bird", new objModel("bird2.obj"));
 		objectMap.put("bunny", new objModel("bunny.obj"));
+	}
+	
+	public void restart(){
+
+		levelOne = new LevelOne();
+		levelTwo = new LevelTwo();
+		temple = new Temple();
+		outside = new Outside();
+		transition1 = new Transition1();
+		transition2 = new Transition2();
+		nextLevel = 0;
+		makeLevelList();
 	}
 	
 public void makeTextureMap(){
@@ -797,7 +815,7 @@ public void makeTextureMap(){
 	
 	public void nextLevel(){
 		BasicLevel level = levelList.get(nextLevel);
-		if(nextLevel == 0){
+		/*if(nextLevel == 0){
 			mouseLock = true;
 			canMove = false;
 		}
@@ -805,6 +823,7 @@ public void makeTextureMap(){
 			canMove = true;
 			mouseLock = false;
 		}
+		*/
 		currentLevel = level;
 		objects = level.getStaticEntities();
 		interactiveObjects = level.getInteractiveEntities();
@@ -853,7 +872,7 @@ public void makeTextureMap(){
 	}
 	public void display(GLAutoDrawable drawable) {
 		
-		//System.out.println("Player X: " + xpos + " Player Z: "+ zpos);
+		System.out.println("Player X: " + xpos + " Player Z: "+ zpos);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		
 		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, wireframe ? GL2.GL_LINE : GL2.GL_FILL);	
@@ -943,7 +962,7 @@ public void makeTextureMap(){
 		if(nextLevel == LEVEL_TRANS_2 && ypos == 0){
 			nextLevel();
 		}
-		if(nextLevel == LEVEL_TITLE_SCREEN){
+		/*if(nextLevel == LEVEL_TITLE_SCREEN){
 		    renderer.beginRendering(800, 800);
 
 		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
@@ -1011,7 +1030,7 @@ public void makeTextureMap(){
 		    renderer.endRendering();
 
 		}
-		
+		*/
 		if(conditionalTimedObjects != null){
 			for(final ConditionalTimedObject currentObject : conditionalTimedObjects){
 				
@@ -1185,7 +1204,7 @@ public void makeTextureMap(){
 	
 	public void init(GLAutoDrawable drawable) {
 		
-	    renderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 36));
+	    renderer = new TextRenderer(new Font("StrokeRoman", Font.BOLD, 36));
 
 	    
 		gl = drawable.getGL().getGL2();

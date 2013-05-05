@@ -2,7 +2,7 @@
 public class InteractiveObject extends BasicObject{
 
 	public enum Function{
-		NEXT_LEVEL, LEVEL_EVENT
+		NEXT_LEVEL, LEVEL_EVENT, RESTART
 	}
 	
 	Function function;

@@ -201,7 +201,7 @@ public class Temple extends BasicLevel{
 		statue.setObject("statue");
 		statue.setFunction(InteractiveObject.Function.LEVEL_EVENT);
 		statue.setTexParams(columns);
-		statue.radius = 20;
+		statue.radius = 10;
 		
 		interactiveEntities.add(statue);
 		
