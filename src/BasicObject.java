@@ -7,7 +7,22 @@ public class BasicObject {
 	boolean goUp = true;
 	int whichFrame = 0;
 	
+<<<<<<< HEAD
 	public void animateObject(){
+=======
+	public boolean equals(Object o){
+		BasicObject other = (BasicObject)o;
+		
+		if (other.getXPos() == this.getXPos() && other.getYPos() == this.getYPos() && other.getZPos() == this.getZPos() && other.getObject().equals(this.getObject()))
+			return true;
+		
+		return false;
+	}
+	
+	public void animateObject(int interval){
+		
+	//if (System.currentTimeMillis()%interval == 0){	
+>>>>>>> origin/Working
 	if (whichFrame == animationCycle.size()-1){
 		goUp = false;
 	}
@@ -23,17 +38,36 @@ public class BasicObject {
 	}
 	
 	this.setObject(animationCycle.get(whichFrame));
+<<<<<<< HEAD
 	}
 	
 	public void setAnimation(String nextObjName){
 		animationCycle.add(nextObjName);
+=======
+	//}
+	
+	//else{
+	
+	//	this.setObject(this.getObject());
+	//}
+}
+	
+	public float[] getRandomDiffuseColor(){
+    	float[] tempfloat = { (float) Math.random(), (float)Math.random(), (float)Math.random(), 1 };
+    	return tempfloat;
+    }
+	
+	public void setAnimation(String nextObjName){
+		animationCycle.add(nextObjName);	
+	
+>>>>>>> origin/Working
 	}
 
 	// X,Y,Z Position of Object
 	protected float xPos = 0, yPos = 0, zPos = 0;
 	
 	// X,Y,Z Scale of Object
-	private float xScale = 1, yScale = 1, zScale = 1;
+	protected float xScale = 1, yScale = 1, zScale = 1;
 	
 	// X,Y,Z Rotation of Object
 	protected float xRot = 0, yRot = 0, zRot = 0;

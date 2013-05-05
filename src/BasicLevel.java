@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class BasicLevel {
 
 
+<<<<<<< HEAD
 		//Turn off by default
 		boolean hasTrigger = false;
 		boolean eventTriggered = false;
@@ -15,6 +16,12 @@ public class BasicLevel {
 		protected ArrayList<GrabableObject> grabableEntities;
 		protected ArrayList<ConditionalTimedObject> conditionalTimedEntities;
 		protected ArrayList<TextObject> textObjects;
+=======
+		protected ArrayList<BasicObject> staticEntities;
+		private ArrayList<BasicObject> dynamicEntities;
+		protected ArrayList<InteractiveObject> interactiveEntities;
+		protected ArrayList<CollisionObject> collisionObjects;
+>>>>>>> origin/Working
 		protected Boolean[][] collisionArray; 
 		
 		public BasicLevel(){
@@ -137,6 +144,7 @@ public class BasicLevel {
 			return interactiveEntities;
 		}
 		
+<<<<<<< HEAD
 		public ArrayList<GrabableObject> getGrabableEntities(){
 			return grabableEntities;
 		}
@@ -147,6 +155,10 @@ public class BasicLevel {
 		
 		public ArrayList<TextObject> getTextObjects(){
 			return textObjects;
+=======
+		public ArrayList<CollisionObject> getCollisionEntities(){
+			return collisionObjects;
+>>>>>>> origin/Working
 		}
 		
 		public void eventHappened(){
@@ -159,6 +171,12 @@ public class BasicLevel {
 			return false;
 		}
 		
+<<<<<<< HEAD
+=======
+		public ArrayList<BasicObject> getDynamicEntities(){
+			return dynamicEntities;
+		}
+>>>>>>> origin/Working
 		
 		
 	}

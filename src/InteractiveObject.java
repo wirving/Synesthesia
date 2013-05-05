@@ -8,6 +8,7 @@ public class InteractiveObject extends BasicObject{
 	Function function;
 	
 	public boolean interactive = false;
+	public int radius;
 	
 	public InteractiveObject(float xPos, float yPos, float zPos) {
 		super(xPos, yPos, zPos);
@@ -23,16 +24,28 @@ public class InteractiveObject extends BasicObject{
 		super(xPos, yPos, zPos, xScale, yScale, zScale, xRot, yRot, zRot);
 	}
 	
+	public InteractiveObject(int i, float f, float g, float h, float j,
+			float k, float l, float m, float n, int o) {
+		super(i, f, g, h, j, k, l, m, n);
+		// TODO Auto-generated constructor stub
+		this.radius = o;
+		
+	}
+
 	@Override
     public void Move(float playerX, float playerY, float playerZ){
 
     }
 
 	
+<<<<<<< HEAD
     public float[] getRandomDiffuseColor(){
     	float[] tempfloat = { (float) Math.random(), (float)Math.random(), (float)Math.random(), 1 };
     	return tempfloat;
     }
+=======
+	
+>>>>>>> origin/Working
 	
 	
 	

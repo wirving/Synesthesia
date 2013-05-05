@@ -30,6 +30,10 @@ public class Transition1 extends BasicLevel{
 		
 		InteractiveObject newEndObj = new InteractiveObject(150,0,1.5f,1,1,1);
 		newEndObj.setObject("tree_aspen");
+<<<<<<< HEAD
+=======
+		newEndObj.radius = 2;
+>>>>>>> origin/Working
 		newEndObj.setFunction(InteractiveObject.Function.NEXT_LEVEL);
 		interactiveEntities.add(newEndObj);
 		
