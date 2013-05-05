@@ -93,6 +93,7 @@ public class LevelOne extends BasicLevel {
 		}
 		InteractiveObject newEndObj = new InteractiveObject(20,0,20,1,1,1);
 		newEndObj.setObject("bottle");
+		newEndObj.setFunction(InteractiveObject.Function.NEXT_LEVEL);
 		interactiveEntities.add(newEndObj);
 	}
 	

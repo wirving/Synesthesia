@@ -1,14 +1,42 @@
+import java.util.ArrayList;
+
 
 public class BasicObject {
+	
+	ArrayList<String> animationCycle = new ArrayList<String>();
+	boolean goUp = true;
+	int whichFrame = 0;
+	
+	public void animateObject(){
+	if (whichFrame == animationCycle.size()-1){
+		goUp = false;
+	}
+	else if (whichFrame == 0){
+		goUp = true;
+	}
+	
+	if (goUp == true){
+		whichFrame ++;
+	}
+	else {
+		whichFrame --;
+	}
+	
+	this.setObject(animationCycle.get(whichFrame));
+	}
+	
+	public void setAnimation(String nextObjName){
+		animationCycle.add(nextObjName);
+	}
 
 	// X,Y,Z Position of Object
-	private float xPos = 0, yPos = 0, zPos = 0;
+	protected float xPos = 0, yPos = 0, zPos = 0;
 	
 	// X,Y,Z Scale of Object
 	private float xScale = 1, yScale = 1, zScale = 1;
 	
 	// X,Y,Z Rotation of Object
-	private float xRot = 0, yRot = 0, zRot = 0;
+	protected float xRot = 0, yRot = 0, zRot = 0;
 	
 	// Default Ambiant Color
 	private float mat_ambient[] = { 0, 1f, 0, 1 };
@@ -24,17 +52,22 @@ public class BasicObject {
     
     // Determines whether the object can move
     // Defaults to No Movement
-    private boolean isDynamic = false;
-    private boolean fadeToBlack = true;
+    protected boolean isDynamic = false;
+    protected boolean fadeToBlack = true;
     
     // Name of Object used to Draw
     private String object = "cube";
+    
+    //All of the texture things
+    private TextureParameters texParams;
     
     // Constructor for position only
     public BasicObject(float xPos,float yPos,float zPos){
     	this.xPos = xPos;
     	this.yPos = yPos;
     	this.zPos = zPos;
+    	
+    	texParams = new TextureParameters();
     }
 
     // Constructor for position and scale
@@ -46,6 +79,8 @@ public class BasicObject {
     	this.xScale = xScale;
     	this.yScale = yScale;
     	this.zScale = zScale;
+    	
+    	texParams = new TextureParameters();
     }
     
     // Constructor for position, scale and rotation
@@ -61,6 +96,8 @@ public class BasicObject {
     	this.xRot = xRot;
     	this.yRot = yRot;
     	this.zRot = zRot;
+    	
+    	texParams = new TextureParameters();
     }
     
     public void setAmbient(float[] ambient){
@@ -213,4 +250,11 @@ public class BasicObject {
     	return this.zRot;
     }
     
+    public TextureParameters getTexParams(){
+    	return this.texParams;
+    }
+    
+    public void setTexParams(TextureParameters tex){
+    	this.texParams = tex;
+    }
 }

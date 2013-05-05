@@ -4,10 +4,17 @@ import java.util.ArrayList;
 public class BasicLevel {
 
 
+		//Turn off by default
+		boolean hasTrigger = false;
+		boolean eventTriggered = false;
+		boolean levelUpdated = false;
 
 		protected ArrayList<BasicObject> staticEntities;
 		private ArrayList<BasicObject> dynamicEntities;
 		protected ArrayList<InteractiveObject> interactiveEntities;
+		protected ArrayList<GrabableObject> grabableEntities;
+		protected ArrayList<ConditionalTimedObject> conditionalTimedEntities;
+		protected ArrayList<TextObject> textObjects;
 		protected Boolean[][] collisionArray; 
 		
 		public BasicLevel(){
@@ -102,7 +109,19 @@ public class BasicLevel {
 		public int getStartX(){
 			return 0;
 		}
+		
+		public int getStartY(){
+			return 0;
+		}
 		public int getStartZ(){
+			return 0;
+		}
+		
+		public float getStartRotv(){
+			return 0;
+		}
+		
+		public float getStartRoth(){
 			return 0;
 		}
 		
@@ -117,5 +136,30 @@ public class BasicLevel {
 		public ArrayList<InteractiveObject> getInteractiveEntities(){
 			return interactiveEntities;
 		}
+		
+		public ArrayList<GrabableObject> getGrabableEntities(){
+			return grabableEntities;
+		}
+		
+		public ArrayList<ConditionalTimedObject> getConditionalTimedObjects(){
+			return conditionalTimedEntities;
+		}
+		
+		public ArrayList<TextObject> getTextObjects(){
+			return textObjects;
+		}
+		
+		public void eventHappened(){
+			
+			//Change something
+		}
+		
+		//Check a condition to start a change in the level
+		public boolean checkTrigger(float xpos, float ypos, float zpos){
+			return false;
+		}
+		
+		
+		
 	}
 
