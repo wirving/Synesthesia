@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 import java.nio.ByteBuffer;
 import java.util.Random;
 
@@ -7,7 +6,6 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.TextureIO;
 
->>>>>>> origin/Working
 
 public class TextureParameters {
 	
@@ -16,9 +14,6 @@ public class TextureParameters {
 	}
 	
 	//Texture parameter info, all in one place!
-
-<<<<<<< HEAD
-=======
 	
 	ByteBuffer randomTexture;
 	
@@ -26,7 +21,6 @@ public class TextureParameters {
 	public boolean tile_y_plane = false;
 	public boolean tile_z_plane = true;
 	
->>>>>>> origin/Working
     //Texture to use
     private String tex_name;
     
@@ -37,11 +31,8 @@ public class TextureParameters {
     //By default turn off
     private boolean textured = false;
     
-<<<<<<< HEAD
-=======
     private boolean useRandomTexture = false;
     
->>>>>>> origin/Working
     private float[] tiling_coefficients = {1f, 1f, 1f};
    
     public TextureParameters(){
@@ -49,11 +40,9 @@ public class TextureParameters {
   
     }
     
-<<<<<<< HEAD
-=======
     public void newRandomTexture(){
     	useRandomTexture = true;
-    	byte[] bytearray = new byte[256 * 3 * 256];
+    	byte[] bytearray = new byte[32 * 3 * 32];
 		new Random().nextBytes(bytearray);
 	    randomTexture = ByteBuffer.allocate(256 * 256* 3);
 	    randomTexture.put(bytearray);
@@ -61,7 +50,6 @@ public class TextureParameters {
     	
     }
     
->>>>>>> origin/Working
     public void setTextured(boolean tex){
     	this.textured = tex;
     }
@@ -99,8 +87,6 @@ public class TextureParameters {
     	
     	return this.texCoords;
     }
-<<<<<<< HEAD
-=======
     
     public boolean useRandomTexture(){
     	return useRandomTexture;
@@ -109,5 +95,4 @@ public class TextureParameters {
     public ByteBuffer getRandomBuffer(){
     	return randomTexture;
     }
->>>>>>> origin/Working
 }

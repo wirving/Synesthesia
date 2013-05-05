@@ -1,8 +1,5 @@
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
 import java.util.Arrays;
->>>>>>> origin/Working
 
 
 public class Outside extends BasicLevel {
@@ -10,27 +7,7 @@ public class Outside extends BasicLevel {
 	private ArrayList<BasicObject> staticEntities;
 	private ArrayList<BasicObject> dynamicEntities;
 	private ArrayList<InteractiveObject> interactiveEntities;
-<<<<<<< HEAD
-	private Boolean[][] collisionArray; 
-	
-	public Outside(){
-		
-		staticEntities = new ArrayList<BasicObject>();
-		
-		BasicObject sky = new BasicObject(0,10,0, 50f, 50f, 50f);
-		sky.setObject("sphere");
-		sky.setDiffuse(new float[]{1.0f, 1.0f, 1.0f, 0.0f});
-		TextureParameters texParams = new TextureParameters();
-		texParams.setTexGenMode(TextureParameters.texCoordGenMode.SPHERE_MAP);
-		texParams.setTextured(true);
-		texParams.setTextureName("sky");
-		sky.setTexParams(texParams);
-		staticEntities.add(sky);
-		
-		
-	}
-	
-=======
+
 	private ArrayList<CollisionObject> collisionObjects;
 	private Boolean[][] collisionArray; 
 	
@@ -466,7 +443,6 @@ public class Outside extends BasicLevel {
 		interactiveEntities.add(magicSphere);
 		
 		
-		//Fuck off, Java
 		ArrayList<BasicObject> static_copy = (ArrayList<BasicObject>) this.getStaticEntities().clone();
 		ArrayList<InteractiveObject> inter_copy = (ArrayList<InteractiveObject>) this.getInteractiveEntities().clone();
 		ArrayList<CollisionObject> coll_copy = (ArrayList<CollisionObject>)this.getCollisionEntities().clone();
@@ -478,14 +454,10 @@ public class Outside extends BasicLevel {
 		return collisionArray;
 	}
 	
->>>>>>> origin/Working
 	public ArrayList<BasicObject> getStaticEntities(){
 		return staticEntities;
 	}
 	
-<<<<<<< HEAD
-
-=======
 	public ArrayList<InteractiveObject> getInteractiveEntities(){
 		return interactiveEntities;
 	}
@@ -529,5 +501,4 @@ public class Outside extends BasicLevel {
 		this.collisionArray = l.getCollisionArray();
 		currentConfig = l;
 	}
->>>>>>> origin/Working
 }

@@ -6,14 +6,6 @@ public class Temple extends BasicLevel{
 	private ArrayList<BasicObject> staticEntities;
 	private ArrayList<BasicObject> dynamicEntities;
 	private ArrayList<InteractiveObject> interactiveEntities;
-<<<<<<< HEAD
-	private Boolean[][] collisionArray; 
-	private ArrayList<Light> lights;
-	BasicObject statue;
-	float[] column_color = new float[]{.95f, .9f, .9f, 1f};
-	float[] wall_color = new float[]{.65f, .6f, .6f, 1f}; //.6 .4 .3
-	float[] zero_array = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
-=======
 	private ArrayList<CollisionObject> collisionObjects;
 	private Boolean[][] collisionArray; 
 	private ArrayList<Light> lights;
@@ -22,9 +14,7 @@ public class Temple extends BasicLevel{
 	float[] wall_color = new float[]{.65f, .6f, .6f, 1f}; //.6 .4 .3
 	float[] zero_array = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
 	String music;
-	
->>>>>>> origin/Working
-	
+		
 	public boolean levelUpdated = false;
 	
 	public Temple(){
@@ -36,10 +26,7 @@ public class Temple extends BasicLevel{
 		staticEntities = new ArrayList<BasicObject>();
 		collisionArray = new Boolean[84][11];
 		interactiveEntities = new ArrayList<InteractiveObject>();
-<<<<<<< HEAD
-=======
 		collisionObjects = new ArrayList<CollisionObject>();
->>>>>>> origin/Working
 		
 		for(int x = 0; x < 84; x++){
 			for (int z = 0; z < 11; z++){
@@ -90,10 +77,7 @@ public class Temple extends BasicLevel{
 		floor_tex.setTilingCoefficients(new float[]{8f, 1f, 1f});
 		floor.setTexParams(floor_tex);
 		floor_tex.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
-<<<<<<< HEAD
-=======
 		ceiling.setTexParams(floor_tex);
->>>>>>> origin/Working
 		
 		staticEntities.add(floor);
 		staticEntities.add(ceiling);
@@ -160,8 +144,6 @@ public class Temple extends BasicLevel{
 		wall_R.setDiffuse(wall_color);
 		wall_L.setSpecular(zero_array);
 		wall_R.setSpecular(zero_array);
-<<<<<<< HEAD
-=======
 		
 		TextureParameters wall_tex = new TextureParameters();
 		wall_tex.setTextured(true);
@@ -170,7 +152,6 @@ public class Temple extends BasicLevel{
 		wall_tex.setTilingCoefficients(new float[]{1f, 1f, 4f});
 		wall_L.setTexParams(floor_tex);
 		wall_R.setTexParams(floor_tex);
->>>>>>> origin/Working
 		
 		wall_L.setObject("plane");
 		wall_R.setObject("plane");
@@ -214,19 +195,6 @@ public class Temple extends BasicLevel{
 		staticEntities.add(pedestal);
 		
 		//Statue
-<<<<<<< HEAD
-		Statue statue = new Statue(80, 1f, 5f, 4f, 4f, 4f, 0f, -90f, 0f);
-		statue.setDiffuse(column_color);
-		statue.setSpecular(zero_array);
-		statue.setObject("statue");
-		
-		statue.setAnimation("statue1");
-		statue.setAnimation("statue2");
-		statue.setAnimation("statue3");
-		statue.setAnimation("statue4");
-		statue.setFunction(InteractiveObject.Function.LEVEL_EVENT);
-		//statue.setTexParams(columns);
-=======
 		statue = new InteractiveObject(80, 1f, 5f, 4f, 4f, 4f, 0f, -90f, 0f, 10);
 		statue.setDiffuse(column_color);
 		statue.setSpecular(zero_array);
@@ -235,7 +203,6 @@ public class Temple extends BasicLevel{
 		statue.setTexParams(columns);
 		statue.radius = 20;
 		
->>>>>>> origin/Working
 		interactiveEntities.add(statue);
 		
 		//Pond and plants
@@ -323,40 +290,4 @@ public class Temple extends BasicLevel{
 		music = "transition1.wav";
 		
 	}
-	
-<<<<<<< HEAD
-	public Boolean[][] getCollisionArray(){
-		return collisionArray;
-	}
-	
-	public ArrayList<InteractiveObject> getInteractiveEntities(){
-		return interactiveEntities;
-	}
-	
-	public void eventHappened(){
-		//Sleep for 20
-		staticEntities.remove(statue);
-		InteractiveObject statue = new InteractiveObject(80, 1f, 5f, 4f, 4f, 4f, 0f, 0f, 0f);
-		statue.setDiffuse(column_color);
-		statue.setSpecular(zero_array);
-		statue.setObject("statue");
-		statue.setFunction(InteractiveObject.Function.NEXT_LEVEL);
-		interactiveEntities.add(statue);
-	}
-	
-	public boolean checkTrigger(float xpos, float ypos, float zpos){
-		
-		if (xpos > 70){
-		eventHappened();
-		this.eventTriggered = true;
-		this.levelUpdated = true;
-		return true;
-		}
-		else return false;
-
-		
-	}
-=======
-
->>>>>>> origin/Working
 }
