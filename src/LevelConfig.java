@@ -6,13 +6,15 @@ public class LevelConfig {
 	private ArrayList<BasicObject> staticEntities;
 	private ArrayList<BasicObject> dynamicEntities;
 	private ArrayList<InteractiveObject> interactiveEntities;
+	private ArrayList<CollisionObject> collisionObjects;
 	private Boolean[][] collisionArray; 
 	
-	public LevelConfig(ArrayList<BasicObject> staticEnt, ArrayList<InteractiveObject> interactiveEnt){
+	public LevelConfig(ArrayList<BasicObject> staticEnt, ArrayList<InteractiveObject> interactiveEnt, ArrayList<CollisionObject> colls, Boolean[][] collision){
 		this.staticEntities = staticEnt;
 		//this.dynamicEntities = level.getDynamicEntities();
 		this.interactiveEntities = interactiveEnt;
-		//this.collisionArray = level.getCollisionArray();
+		this.collisionObjects = colls;
+		this.collisionArray = collision;
 	}
 	
 	public LevelConfig(ArrayList<BasicObject> staticEnt){
@@ -33,6 +35,10 @@ public class LevelConfig {
 	
 	public ArrayList<InteractiveObject> getInteractiveEntities(){
 		return interactiveEntities;
+	}
+	
+	public ArrayList<CollisionObject> getCollisionEntities(){
+		return collisionObjects;
 	}
 	
 	public Boolean[][] getCollisionArray(){

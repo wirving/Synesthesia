@@ -32,6 +32,14 @@ public class JitteringObject extends BasicObject{
 	
 	}
 
+	public JitteringObject(float f, float g, float i, float h, float j, float k,
+			float l, float m, float n, float minYPos, float maxYPos) {
+		super(f, g, i, h, j, k, l, m, n );
+		this.minYPos = minYPos;
+		this.maxYPos = maxYPos;
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void Move(float player_x, float player_y, float player_z){
 		
@@ -47,6 +55,11 @@ public class JitteringObject extends BasicObject{
 		this.xRot += (Math.random()-.5);
 		this.yRot += (Math.random()-.5);
 		this.zRot += (Math.random()-.5);
+	
+		this.xScale += (Math.random() -.5)/15;
+		this.yScale += (Math.random() -.5)/15;
+		this.zScale += (Math.random() -.5)/15;
+		
 	}
 
 }

@@ -164,9 +164,11 @@ public class Temple extends BasicLevel{
 
 		TextureParameters behind_statue = new TextureParameters();
 		behind_statue.setTextured(true);
-		behind_statue.setTextureName("tiles2");
+		behind_statue.setTextureName("mosaic");
+		//behind_statue.tile_x_plane = false;
+		//behind_statue.tile_y_plane = true;
 		behind_statue.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
-		behind_statue.setTilingCoefficients(new float[]{1f,4f, 4f});
+		behind_statue.setTilingCoefficients(new float[]{4f,1f, 6f});
 		
 		wall_back.setTexParams(behind_statue);
 		
@@ -198,7 +200,8 @@ public class Temple extends BasicLevel{
 		statue.setObject("statue");
 		statue.setFunction(InteractiveObject.Function.LEVEL_EVENT);
 		statue.setTexParams(columns);
-	
+		statue.radius = 20;
+		
 		interactiveEntities.add(statue);
 		
 		//Pond and plants
@@ -268,14 +271,20 @@ public class Temple extends BasicLevel{
 		statue_coll.setDiffuse(column_color);
 		statue_coll.setSpecular(zero_array);
 		
-		statue_coll.setAnimation("statue1");
-		statue_coll.setAnimation("statue1");
+		//statue_coll.setAnimation("statue1");
+		//statue_coll.setAnimation("statue1");
 		statue_coll.setAnimation("statue2");
-		statue_coll.setAnimation("statue2");
+		//statue_coll.setAnimation("statue2");
 		statue_coll.setAnimation("statue3");
-		statue_coll.setAnimation("statue3");
+		//statue_coll.setAnimation("statue3");
 		statue_coll.setAnimation("statue4");
-		statue_coll.setAnimation("statue4");
+		//statue_coll.setAnimation("statue4");
+		statue_coll.setAnimation("statue5");
+		//statue_coll.setAnimation("statue5");
+		statue_coll.setAnimation("statue6");
+		//statue_coll.setAnimation("statue6");
+		//statue_coll.setAnimation("statue7");
+		statue_coll.setAnimation("statue7");
 		collisionObjects.add(statue_coll);
 		music = "transition1.wav";
 		

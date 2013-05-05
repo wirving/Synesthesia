@@ -17,6 +17,7 @@ public class CollisionObject extends BasicObject{
 		super(f, g, h, i, j, k);
 	}
 
+
 	public boolean playerCollision(float player_x, float player_y, float player_z){
 		
 		if(Math.sqrt((Math.pow(Math.abs(Math.max(this.getXPos(),player_x) - Math.min(this.getXPos(),player_x)),2)+Math.pow(Math.abs(Math.max(this.getZPos(), player_z) - Math.min(this.getZPos(),  player_z)),2))) < 2 ){

@@ -17,6 +17,10 @@ public class TextureParameters {
 	
 	ByteBuffer randomTexture;
 	
+	public boolean tile_x_plane = true;
+	public boolean tile_y_plane = false;
+	public boolean tile_z_plane = true;
+	
     //Texture to use
     private String tex_name;
     

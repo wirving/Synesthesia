@@ -56,7 +56,7 @@ public class BasicObject {
 	protected float xPos = 0, yPos = 0, zPos = 0;
 	
 	// X,Y,Z Scale of Object
-	private float xScale = 1, yScale = 1, zScale = 1;
+	protected float xScale = 1, yScale = 1, zScale = 1;
 	
 	// X,Y,Z Rotation of Object
 	protected float xRot = 0, yRot = 0, zRot = 0;

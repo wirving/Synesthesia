@@ -108,8 +108,18 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 						gl.glEnable(GL2.GL_TEXTURE_GEN_T);
 						gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
 						gl.glTexGeni(GL2.GL_T, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
+						
+						if (params.tile_x_plane){
 						gl.glTexGenfv(GL2.GL_S, GL2.GL_OBJECT_PLANE, xPlane, 0);
+						}
+						
+						if (params.tile_z_plane){
 						gl.glTexGenfv(GL2.GL_T, GL2.GL_OBJECT_PLANE, zPlane, 0);
+						}
+						
+						if (params.tile_y_plane){
+						gl.glTexGenfv(GL2.GL_T, GL2.GL_OBJECT_PLANE, yPlane, 0);
+						}
 					}
 					
 					else if (params.getTexGenMode() == TextureParameters.texCoordGenMode.SPHERE) //Sphere
@@ -588,9 +598,11 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			    	}
 					break;
 				case LEVEL_EVENT:
+					if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < currentObject.radius ){
 					//Do something in level
 					currentLevel.eventHappened();
 					updateLevel();
+				}
 				}
 				
 		    	
@@ -698,12 +710,18 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		objectMap.put("tree_aspen",  new objModel("tree_aspen.obj"));
 		objectMap.put("sphere", new objModel("small_sphere.obj"));
 		objectMap.put("statue1", new objModel("statue_step_1_new_shoulder.obj"));
-		objectMap.put("statue2", new objModel("statue_step_2_new.obj"));
-		objectMap.put("statue3", new objModel("statue_step_3_new.obj"));
-		objectMap.put("statue4", new objModel("statue_step_4_new.obj"));
+		objectMap.put("statue2", new objModel("statue_step_15.obj"));
+		objectMap.put("statue3", new objModel("statue_step_2_new.obj"));
+		objectMap.put("statue4", new objModel("statue_step_25.obj"));
+		objectMap.put("statue5", new objModel("statue_step_3_new.obj"));
+		objectMap.put("statue6", new objModel("statue_step_35.obj"));
+		objectMap.put("statue7", new objModel("statue_step_4_new.obj"));
 		objectMap.put("rock", new objModel("rock.obj"));
 		objectMap.put("pond", new objModel("pond2.obj"));
 		objectMap.put("deer", new objModel("deer_jump.obj"));
+		objectMap.put("doe", new objModel("deer_female.obj"));
+		objectMap.put("bird", new objModel("bird2.obj"));
+		objectMap.put("bunny", new objModel("bunny.obj"));
 
 		
 	}
@@ -713,17 +731,19 @@ public void makeTextureMap(){
 		ArrayList<String> filenames = new ArrayList<String>();
 		filenames.add("floor.png");
 		filenames.add("marble_tile2.jpg");
-		filenames.add("tiles.jpg");
+		filenames.add("mosaic.png");
 		filenames.add("sky_map.png");
 		filenames.add("grass.png");
+		filenames.add("tvstatic.jpg");
 		
 		
 		ArrayList<String> tex_names = new ArrayList<String>();
 		tex_names.add("floor");
 		tex_names.add("marble");
-		tex_names.add("tiles2");
+		tex_names.add("mosaic");
 		tex_names.add("sky");
 		tex_names.add("grass");
+		tex_names.add("static");
 		
 		
 		for (int i = 0; i < tex_names.size(); i++){
