@@ -38,6 +38,14 @@ public class InteractiveObject extends BasicObject{
     }
 
 	
+//<<<<<<< HEAD
+   /* public float[] getRandomDiffuseColor(){
+    	float[] tempfloat = { (float) Math.random(), (float)Math.random(), (float)Math.random(), 1 };
+    	return tempfloat;
+    }*/
+//=======
+	
+	
 	
 	
 	public void setInteractive(boolean interactive){

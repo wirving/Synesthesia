@@ -7,6 +7,7 @@ public class Outside extends BasicLevel {
 	private ArrayList<BasicObject> staticEntities;
 	private ArrayList<BasicObject> dynamicEntities;
 	private ArrayList<InteractiveObject> interactiveEntities;
+
 	private ArrayList<CollisionObject> collisionObjects;
 	private Boolean[][] collisionArray; 
 	
@@ -442,7 +443,6 @@ public class Outside extends BasicLevel {
 		interactiveEntities.add(magicSphere);
 		
 		
-		//Fuck off, Java
 		ArrayList<BasicObject> static_copy = (ArrayList<BasicObject>) this.getStaticEntities().clone();
 		ArrayList<InteractiveObject> inter_copy = (ArrayList<InteractiveObject>) this.getInteractiveEntities().clone();
 		ArrayList<CollisionObject> coll_copy = (ArrayList<CollisionObject>)this.getCollisionEntities().clone();
@@ -468,12 +468,15 @@ public class Outside extends BasicLevel {
 	}
 	
 	public int getStartX(){
-		return 3;
+		return 12;
 	}
 
 	public int getStartZ(){
-		return 3;
-		
+		return 15;
+	}
+	
+	public int getStartY(){
+		return 20;
 	}
 	
 	public void eventHappened(){

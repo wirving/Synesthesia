@@ -14,14 +14,15 @@ public class Temple extends BasicLevel{
 	float[] wall_color = new float[]{.65f, .6f, .6f, 1f}; //.6 .4 .3
 	float[] zero_array = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
 	String music;
-	
-	
+		
 	public boolean levelUpdated = false;
 	
 	public Temple(){
 		
 		music = "temptemple.wav";
 		setStaticLights();
+		hasTrigger = true;
+		eventTriggered = false;
 		staticEntities = new ArrayList<BasicObject>();
 		collisionArray = new Boolean[84][11];
 		interactiveEntities = new ArrayList<InteractiveObject>();
@@ -286,9 +287,7 @@ public class Temple extends BasicLevel{
 		//statue_coll.setAnimation("statue7");
 		statue_coll.setAnimation("statue7");
 		collisionObjects.add(statue_coll);
-		music = "transition1.wav";
+		music = "StatueAttack.wav";
 		
 	}
-	
-
 }

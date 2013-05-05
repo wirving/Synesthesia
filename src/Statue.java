@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 
+
 public class Statue extends CollisionObject {
 
 	
@@ -10,6 +11,7 @@ public class Statue extends CollisionObject {
 	}
 
 	
+
 	public Statue(float i, float f, float g, float h, float i2, float i3,
 			float i4, float i5, float i6) {
 		super(i, f, g, h, i2, i3, i4, i5, i6);
@@ -21,8 +23,7 @@ public class Statue extends CollisionObject {
 		
 		//If player is close, change to NEXT_LEVEL
 		//if(Math.sqrt((Math.pow(Math.abs(Math.max(this.getXPos(),player_x) - Math.min(this.getXPos(),player_x)),2)+Math.pow(Math.abs(Math.max(this.getZPos(), player_z) - Math.min(this.getZPos(),  player_z)),2))) < 20 ){
-		
-		
+				
 		//Increase y
 		if (yPos < 1.5){
 		this.yPos += .02f; 
@@ -43,5 +44,3 @@ public class Statue extends CollisionObject {
 		
 		}
 	}
-
-//}

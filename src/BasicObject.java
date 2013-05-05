@@ -7,6 +7,7 @@ public class BasicObject {
 	boolean goUp = true;
 	int whichFrame = 0;
 	
+
 	public boolean equals(Object o){
 		BasicObject other = (BasicObject)o;
 		
@@ -34,12 +35,7 @@ public class BasicObject {
 	}
 	
 	this.setObject(animationCycle.get(whichFrame));
-	//}
-	
-	//else{
-	
-	//	this.setObject(this.getObject());
-	//}
+
 }
 	
 	public float[] getRandomDiffuseColor(){
@@ -75,8 +71,8 @@ public class BasicObject {
     
     // Determines whether the object can move
     // Defaults to No Movement
-    private boolean isDynamic = false;
-    private boolean fadeToBlack = true;
+    protected boolean isDynamic = false;
+    protected boolean fadeToBlack = true;
     
     // Name of Object used to Draw
     private String object = "cube";

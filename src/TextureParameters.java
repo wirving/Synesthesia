@@ -1,3 +1,4 @@
+
 import java.nio.ByteBuffer;
 import java.util.Random;
 
@@ -13,7 +14,6 @@ public class TextureParameters {
 	}
 	
 	//Texture parameter info, all in one place!
-
 	
 	ByteBuffer randomTexture;
 	
@@ -42,7 +42,7 @@ public class TextureParameters {
     
     public void newRandomTexture(){
     	useRandomTexture = true;
-    	byte[] bytearray = new byte[256 * 3 * 256];
+    	byte[] bytearray = new byte[32 * 3 * 32];
 		new Random().nextBytes(bytearray);
 	    randomTexture = ByteBuffer.allocate(256 * 256* 3);
 	    randomTexture.put(bytearray);
