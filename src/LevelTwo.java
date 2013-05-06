@@ -194,4 +194,13 @@ public class LevelTwo extends BasicLevel{
 	public int getStartZ(){
 		return 1;
 	}
+	
+	/*public float getStartRoth(){
+		return 180;
+	}*/
+	
+	@Override
+	public String getLevelMusic(){
+		return "chipmaze.wav";
+	}
 }

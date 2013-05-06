@@ -201,7 +201,7 @@ public class Temple extends BasicLevel{
 		statue.setObject("statue");
 		statue.setFunction(InteractiveObject.Function.LEVEL_EVENT);
 		statue.setTexParams(columns);
-		statue.radius = 20;
+		statue.radius = 10;
 		
 		interactiveEntities.add(statue);
 		
@@ -287,7 +287,11 @@ public class Temple extends BasicLevel{
 		//statue_coll.setAnimation("statue7");
 		statue_coll.setAnimation("statue7");
 		collisionObjects.add(statue_coll);
-		music = "transition1.wav";
+		music = "StatueAttack.wav";
 		
 	}
+	/*
+	public float getStartRoth(){
+		return 90;
+	}*/
 }

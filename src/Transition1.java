@@ -90,20 +90,6 @@ public class Transition1 extends BasicLevel{
 		text9.setDiffuse(new float[]{ .8f, 0f, 1f, 0f});
 		text9.setText("LET MY WORDS GUIDE YOU TO WHERE YOU THINK YOU NEED TO GO");
 		textObjects.add(text9);
-		
-		/*
-		if(nextLevel == 2){
-	    	
-			gl.glPushMatrix();
-				gl.glTranslatef(100, -1f, 2f);
-				gl.glScalef(.01f, .01f, .01f);
-				gl.glRotatef(-90, 1f, 0f, 0f);
-				tempdiffuse = new float[]{ .8f, 0f, 1f, 0f};
-			    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, tempdiffuse, 0);
-		    	glut.glutStrokeString(glut.STROKE_ROMAN, "LET MY WORDS GUIDE YOU TO WHERE YOU THINK YOU NEED TO GO");
-		    	//gl.glTranslatef(-20, 0, -4);
-	    	gl.glPopMatrix();
-		}*/
 	}
 	@Override
 	public int getStartX(){
