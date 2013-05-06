@@ -90,4 +90,8 @@ public class EndScreen extends BasicLevel{
 	public int getStartZ(){
 		return 24;
 	}
+	
+	public int getStartY(){
+		return 100;
+	}
 }

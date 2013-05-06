@@ -51,6 +51,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
+	private static final int LEVEL_LEVEL_2 = 4;
 	private static final int LEVEL_OUTSIDE = 7;
 	private static final int LEVEL_END_SCREEN = 0;
 	private static final int LEVEL_TITLE_SCREEN = 1;
@@ -599,11 +600,12 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 							if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getDestX()) - Math.min(xpos,currentObject.getDestX())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getDestZ()) - Math.min(zpos,  currentObject.getDestZ())),2))) < 2 ){
 								currentObject.place();
 								holdingObject = false;
+								objectCount = objectCount +1;
 							}
 						}
 					}
 					else if(Math.sqrt((Math.pow(Math.abs(Math.max(xpos,currentObject.getXPos()) - Math.min(xpos,currentObject.getXPos())),2)+Math.pow(Math.abs(Math.max(zpos, currentObject.getZPos()) - Math.min(zpos,  currentObject.getZPos())),2))) < 2 ){
-						if(!holdingObject){
+						if(!holdingObject && currentObject.getDestX() != currentObject.getXPos() && currentObject.getDestZ() != currentObject.getZPos()){
 							currentObject.setIsGrabbed(true);
 							holdingObject = true;
 							break;
@@ -615,6 +617,11 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			// Objects that transition to the next level or perform some action within the level
 			if(interactiveObjects != null){
 				for(InteractiveObject currentObject: interactiveObjects){
+					if(nextLevel == LEVEL_LEVEL_2){
+						if(objectCount == 4){
+							currentObject.setDynamic(true);
+						}
+					}
 					InteractiveObject.Function function = currentObject.getFunction();
 					
 					switch (function){
@@ -688,6 +695,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 
 	private int nextLevel =0;
 	private boolean canMove = true;
+	private int objectCount = 0;
 	private TitleScreen titleScreen = new TitleScreen();
 	private LevelOne levelOne = new LevelOne();
 	private Transition1 transition1 = new Transition1();
@@ -758,7 +766,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 	}
 	
 	public void restart(){
-
+		levelList.clear();
 		interactiveObjects.clear();
 		objects.clear();
 		grabableObjects.clear();
@@ -777,6 +785,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		this.transition1 = new Transition1();
 		this.transition2 = new Transition2();
 		nextLevel = 0;
+		this.objectCount = 0;
 		makeLevelList();
 	}
 	
@@ -965,11 +974,11 @@ public void makeTextureMap(){
 			}
 		}
 		
-		if((nextLevel == LEVEL_TRANS_2 || nextLevel == LEVEL_OUTSIDE) && canDrop){
+		if((nextLevel == LEVEL_TRANS_2 || nextLevel == LEVEL_OUTSIDE || nextLevel == LEVEL_END_SCREEN) && canDrop){
 			if(ypos > 0){
 				if(counter == 0){
 					counter = 5;
-					ypos = ypos-LEVEL_TITLE_SCREEN;
+					ypos = ypos-1;
 				}
 				else if(counter > 0){
 					counter--;
@@ -979,75 +988,7 @@ public void makeTextureMap(){
 		if(nextLevel == LEVEL_TRANS_2 && ypos == 0){
 			nextLevel();
 		}
-		/*if(nextLevel == LEVEL_TITLE_SCREEN){
-		    renderer.beginRendering(800, 800);
 
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("SYNESTHESIA", 275, 750);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("An Abstract Exploration Game", 150, 700);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("_____________", 275, 750);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("Controls", 350, 600);
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("_______", 350, 600);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("-Use W/S to move forwards/backwards", 100, 550);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("-Use A/D to strafe left and right", 100, 500);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("-Use the mouse to look around", 100, 450);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("-Use the spacebar to interact ", 100, 400);
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("with objects in the world", 150, 350);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("Objective", 350, 300);
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("________", 350, 300);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("-Explore the world", 150, 250);
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("-Investigate any strange objects", 150, 200);
-		    
-		    renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("<Press Space To Start>", 200, 100);
-		    
-		    renderer.endRendering();
-		}
-		
-		if(nextLevel == LEVEL_END_SCREEN){
-		    renderer.beginRendering(800, 800);
-
-			renderer.setColor(1.0f, 0.2f, 0.2f, 0.8f);
-		    renderer.draw("That's it", 325, 675);
-		    
-		    renderer.setColor(0.2f, 0.2f, 1.0f, 0.8f);
-		    renderer.draw("You can go home", 260, 575);
-		    
-		    renderer.setColor(0.2f, 1.0f, 0.2f, 0.8f);
-		    renderer.draw("There's nothing else here", 220, 475);
-		    
-		    renderer.setColor(0.8f, 0.2f, 1.0f, 0.8f);
-		    renderer.draw("except for this text anyway...", 200, 375);
-		    
-		    renderer.setColor(0.2f, 1.0f, 0.8f, 0.8f);
-		    renderer.draw("But feel free to come back soon", 180, 275);
-		    
-		    renderer.endRendering();
-
-		}
-		*/
 		if(conditionalTimedObjects != null){
 			for(final ConditionalTimedObject currentObject : conditionalTimedObjects){
 				
