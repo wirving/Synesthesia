@@ -108,6 +108,11 @@ public class LevelOne extends BasicLevel {
 	public int getStartZ(){
 		return 10;
 	}
+	
+	/*public float getStartRoth(){
+		return 90;
+	}*/
+	
 	@Override
 	public Boolean[][] getCollisionArray(){
 		return collisionArray;

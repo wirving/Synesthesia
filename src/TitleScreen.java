@@ -54,4 +54,9 @@ public class TitleScreen extends BasicLevel{
 	public int getStartZ(){
 		return 26;
 	}
+	
+	@Override
+	public String getLevelMusic(){
+		return "title.wav";
+	}
 }

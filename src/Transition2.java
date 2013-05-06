@@ -41,7 +41,6 @@ public class Transition2 extends BasicLevel{
 		drop4.setObject("sphere");
 		staticEntities.add(drop4);
 		
-		
 		DropObject drop5 = new DropObject(8, 350, 7);
 		drop5.setObject("sphere");
 		staticEntities.add(drop5);

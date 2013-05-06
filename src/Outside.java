@@ -570,4 +570,14 @@ public class Outside extends BasicLevel {
 		this.collisionArray = l.getCollisionArray();
 		currentConfig = l;
 	}
+	
+	@Override
+	public String getLevelMusic(){
+		if(currentConfig.equals(frozen)){
+			return "outdoors.wav";
+		}
+		else{
+			return "messedup.wav";
+		}
+	}
 }

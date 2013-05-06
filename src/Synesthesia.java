@@ -52,7 +52,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
 	private static final int LEVEL_OUTSIDE = 7;
-	private static final int LEVEL_END_SCREEN = 8;
+	private static final int LEVEL_END_SCREEN = 0;
 	private static final int LEVEL_TITLE_SCREEN = 1;
 	private static final int LEVEL_TRANS_2 = 6;
 
@@ -850,6 +850,8 @@ public void makeTextureMap(){
 		xpos = level.getStartX();
 		ypos = level.getStartY();
 		zpos = level.getStartZ();
+		//rotv = level.getStartRotv();
+		//roth = level.getStartRoth();
 		changeMusic(level.getLevelMusic());
 		nextLevel = (nextLevel+LEVEL_TITLE_SCREEN)%levelList.size();
 	}
@@ -1213,8 +1215,8 @@ public void makeTextureMap(){
 	}
 	
 	public static void main(String[] args) {
-		
-		new Synesthesia();
+		//new().setVisible(true);
+		new Synesthesia().setVisible(true);
 	}
 	
 	public void init(GLAutoDrawable drawable) {
