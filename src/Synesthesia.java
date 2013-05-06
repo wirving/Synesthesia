@@ -51,11 +51,11 @@ import com.jogamp.opengl.util.texture.TextureIO;
 
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
-	private static final int LEVEL_LEVEL_2 = 4;
-	private static final int LEVEL_OUTSIDE = 7;
-	private static final int LEVEL_END_SCREEN = 0;
-	private static final int LEVEL_TITLE_SCREEN = 1;
-	private static final int LEVEL_TRANS_2 = 6;
+	private static final int LEVEL_LEVEL_2 = 4;//4;
+	private static final int LEVEL_OUTSIDE = 7;//7;
+	private static final int LEVEL_END_SCREEN = 0;//8;
+	private static final int LEVEL_TITLE_SCREEN =1; //1;
+	private static final int LEVEL_TRANS_2 = 6;//6;
 
 	/* This defines the objModel class, which takes care
 	 * of loading a triangular mesh from an obj file,
@@ -693,7 +693,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 			int screenXDiv2=width>>LEVEL_TITLE_SCREEN;
 	          int screenYDiv2=height>>LEVEL_TITLE_SCREEN;
 
-	private int nextLevel =0;
+	private int nextLevel = 0;
 	private boolean canMove = true;
 	private int objectCount = 0;
 	private TitleScreen titleScreen = new TitleScreen();
@@ -769,10 +769,17 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		levelList.clear();
 		interactiveObjects.clear();
 		objects.clear();
+		
+		if (grabableObjects != null)
 		grabableObjects.clear();
+		
+		if (conditionalTimedObjects != null)
 		conditionalTimedObjects.clear();
+		
+		if (textObjects!= null)
 		textObjects.clear();
-		conditionalTimedObjects.clear();
+		
+		if (collisionObjects != null)
 		collisionObjects.clear();
 		//collisionArray.clear();
 		
@@ -784,7 +791,7 @@ class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseL
 		this.outside = new Outside();
 		this.transition1 = new Transition1();
 		this.transition2 = new Transition2();
-		nextLevel = 0;
+		nextLevel = 1;
 		this.objectCount = 0;
 		makeLevelList();
 	}
@@ -862,7 +869,7 @@ public void makeTextureMap(){
 		//rotv = level.getStartRotv();
 		//roth = level.getStartRoth();
 		changeMusic(level.getLevelMusic());
-		nextLevel = (nextLevel+LEVEL_TITLE_SCREEN)%levelList.size();
+		nextLevel = (nextLevel + 1)%levelList.size();
 	}
 	
 	public void updateLevel(){
