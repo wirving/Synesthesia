@@ -30,8 +30,8 @@ public class Statue extends CollisionObject {
 		}
 		
 		//Interpolate between player's x and z and current x and z
-		this.xPos = (float)(.995 * (this.xPos) + .005 *(player_x));
-		this.zPos = (float)(.995 * (this.zPos) + .005 * (player_z));
+		this.xPos = (float)(.99 * (this.xPos) + .01 *(player_x));
+		this.zPos = (float)(.99 * (this.zPos) + .01 * (player_z));
 		
 		animateObject(2);
 		

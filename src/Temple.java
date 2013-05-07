@@ -61,7 +61,7 @@ public class Temple extends BasicLevel{
 		
 		//Floor & ceiling
 		BasicObject floor = new BasicObject(40, -1f, 5, 100, 2, 10);
-		BasicObject ceiling = new BasicObject(-40, -8f, 5, 100, 2, 10, 0f, 0f, 180f);
+		BasicObject ceiling = new BasicObject(-40, -19f, 5, 100, 2, 10, 0f, 0f, 180f);
 		
 		floor.setDiffuse(wall_color);
 		ceiling.setDiffuse(wall_color);
@@ -84,13 +84,13 @@ public class Temple extends BasicLevel{
 
 		//Columns & capitols
 		for (int x = 0; x < 9; x++){
-		BasicObject column_L = new BasicObject(10 * x, 3f, .5f, 1, 10, 1);
-		BasicObject column_R = new BasicObject(10 * x, 3f, 9.5f, 1, 10, 1);
+		BasicObject column_L = new BasicObject(10 * x, 10f, .5f, 1, 24, 1);
+		BasicObject column_R = new BasicObject(10 * x, 10f, 9.5f, 1, 24, 1);
 		
 		BasicObject capitol_L_bot = new BasicObject(10 * x, -1f, 0f, 1.2f, .8f, 2f);
 		BasicObject capitol_R_bot = new BasicObject(10 * x, -1f, 10f, 1.2f, .8f, 2f);
-		BasicObject capitol_R_top = new BasicObject(10 * x, 8f, 10f, 1.2f, .8f, 2f);
-		BasicObject capitol_L_top = new BasicObject(10 * x, 8f, 0f, 1.2f, .8f, 2f);
+		BasicObject capitol_R_top = new BasicObject(10 * x, 19f, 10f, 1.2f, .8f, 2f);
+		BasicObject capitol_L_top = new BasicObject(10 * x, 19f, 0f, 1.2f, .8f, 2f);
 
 		TextureParameters columns = new TextureParameters();
 		columns.setTexGenMode(TextureParameters.texCoordGenMode.SPHERE);
@@ -137,8 +137,8 @@ public class Temple extends BasicLevel{
 		
 		
 		//Walls
-		BasicObject wall_L = new BasicObject(40, 0f, -3, 100, 2.5f, 10, 90f, 0, 0);
-		BasicObject wall_R = new BasicObject(40, -10f, 3, 100, 2.5f, 10, -90f, 0, 0);
+		BasicObject wall_L = new BasicObject(40, 0f, -3, 100, 2.5f, 40, 90f, 0, 0);
+		BasicObject wall_R = new BasicObject(40, -10f, 3, 100, 2.5f, 40, -90f, 0, 0);
 		
 		wall_L.setDiffuse(wall_color);
 		wall_R.setDiffuse(wall_color);
@@ -160,8 +160,8 @@ public class Temple extends BasicLevel{
 		staticEntities.add(wall_L);
 		staticEntities.add(wall_R);
 		
-		BasicObject wall_back = new BasicObject(0f, -83f, 5f, 30f, 2.5f, 30f, 0f, 0f, 90f);
-		BasicObject wall_behind = new BasicObject(-5f, -3f, 5f, 25f, 2.5f, 25f, 0f, 0f, -90f);
+		BasicObject wall_back = new BasicObject(0f, -83f, 5f, 50f, 2.5f, 30f, 0f, 0f, 90f);
+		BasicObject wall_behind = new BasicObject(-5f, -3f, 5f, 50f, 2.5f, 25f, 0f, 0f, -90f);
 
 		TextureParameters behind_statue = new TextureParameters();
 		behind_statue.setTextured(true);
@@ -169,11 +169,17 @@ public class Temple extends BasicLevel{
 		//behind_statue.tile_x_plane = false;
 		//behind_statue.tile_y_plane = true;
 		behind_statue.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
-		behind_statue.setTilingCoefficients(new float[]{4f,1f, 6f});
+		behind_statue.setTilingCoefficients(new float[]{8f,1f, 6f});
 		
 		wall_back.setTexParams(behind_statue);
 		
-		wall_behind.setTexParams(wall_tex);
+		TextureParameters back_wall = new TextureParameters();
+		back_wall.setTextured(true);
+		back_wall.setTexGenMode(TextureParameters.texCoordGenMode.PLANE);
+		back_wall.setTextureName("floor");
+		back_wall.setTilingCoefficients(new float[]{4f, 1f, 1f});
+		
+		wall_behind.setTexParams(back_wall);
 		wall_back.setDiffuse(wall_color);
 		wall_behind.setDiffuse(wall_color);
 		wall_behind.setSpecular(zero_array);
@@ -275,16 +281,16 @@ public class Temple extends BasicLevel{
 		//statue_coll.setAnimation("statue1");
 		//statue_coll.setAnimation("statue1");
 		statue_coll.setAnimation("statue2");
-		//statue_coll.setAnimation("statue2");
+		statue_coll.setAnimation("statue2");
 		statue_coll.setAnimation("statue3");
-		//statue_coll.setAnimation("statue3");
+		statue_coll.setAnimation("statue3");
 		statue_coll.setAnimation("statue4");
-		//statue_coll.setAnimation("statue4");
+		statue_coll.setAnimation("statue4");
 		statue_coll.setAnimation("statue5");
-		//statue_coll.setAnimation("statue5");
+		statue_coll.setAnimation("statue5");
 		statue_coll.setAnimation("statue6");
-		//statue_coll.setAnimation("statue6");
-		//statue_coll.setAnimation("statue7");
+		statue_coll.setAnimation("statue6");
+		statue_coll.setAnimation("statue7");
 		statue_coll.setAnimation("statue7");
 		collisionObjects.add(statue_coll);
 		music = "StatueAttack.wav";

@@ -16,8 +16,8 @@ public class RotatingObject extends BasicObject {
 	public void Move(float player_x, float player_y, float player_z){
 	
 		
-		this.xRot += .5f;
-		this.zRot += .5f;
+		this.xRot += .1f;
+		this.zRot += .1f;
 		
 	}
 

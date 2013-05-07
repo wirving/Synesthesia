@@ -52,6 +52,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 class Synesthesia extends JFrame implements GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
 	private static final int LEVEL_LEVEL_2 = 4;//4;
+	private static final int LEVEL_TRANS_1 = 3;
 	private static final int LEVEL_OUTSIDE = 7;//7;
 	private static final int LEVEL_END_SCREEN = 0;//8;
 	private static final int LEVEL_TITLE_SCREEN =1; //1;
@@ -919,7 +920,15 @@ public void makeTextureMap(){
 		
 		gl.glLoadIdentity();
 		
-		
+		if (nextLevel == LEVEL_OUTSIDE || nextLevel == LEVEL_TRANS_1){
+		float light4_position[] = { 0, 5, 1, 0 };
+	    float light4_diffuse[] = { LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN };
+	    float light4_specular[] = { LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN };
+	    gl.glLightfv( GL2.GL_LIGHT4, GL2.GL_POSITION, light4_position, 0);
+	    gl.glLightfv( GL2.GL_LIGHT4, GL2.GL_DIFFUSE, light4_diffuse, 0);
+	    gl.glLightfv( GL2.GL_LIGHT4, GL2.GL_SPECULAR, light4_specular, 0);
+		gl.glEnable(GL2.GL_LIGHT4);
+		}
 		/* this is the transformation of the entire scene */
 		gl.glTranslatef(centerx, centery, centerz);
 		gl.glRotatef(rotv, 1.0f, 0, 0);
@@ -1191,13 +1200,18 @@ public void makeTextureMap(){
 		}
 
 		//Eventually set lights based on scene description
-	    float light0_position[] = { 0, 5, LEVEL_TITLE_SCREEN, 0 };
+	    float light0_position[] = { 0, 5, LEVEL_TITLE_SCREEN, 1 };
 	    float light0_diffuse[] = { LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN };
 	    float light0_specular[] = { LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN };
 	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_POSITION, light0_position, 0);
 	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light0_diffuse, 0);
 	    gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_SPECULAR, light0_specular, 0);
-
+	    gl.glLightf(GL2.GL_LIGHT0, GL2.GL_CONSTANT_ATTENUATION, 3.0f);
+	   // gl.glLightf(GL2.GL_LIGHT0, GL2.GL_LINEAR_ATTENUATION, 1.0f);
+	    //gl.glLightf(GL2.GL_LIGHT0, GL2.GL_QUADRATIC_ATTENUATION, 0.5f);
+//
+	    //gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_CUTOFF, 20.0f);
+	    
 	    float light1_position[] = { -LEVEL_TITLE_SCREEN, 0, 0, 0 };
 	    float light1_diffuse[] = { LEVEL_TITLE_SCREEN,LEVEL_TITLE_SCREEN,LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN };
 	    float light1_specular[] = { LEVEL_TITLE_SCREEN,LEVEL_TITLE_SCREEN,LEVEL_TITLE_SCREEN, LEVEL_TITLE_SCREEN };
